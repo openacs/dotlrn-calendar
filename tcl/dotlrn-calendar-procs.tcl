@@ -203,6 +203,10 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
             -object_id $calendar_id \
             -privilege "read"
 
+    # JCD: bug1226: students should not be able to create calendar items 
+    # so don't inherit.
+    permission::set_not_inherit -object_id $calendar_id
+
     # 
     # ** portlet stuff **
     # 
