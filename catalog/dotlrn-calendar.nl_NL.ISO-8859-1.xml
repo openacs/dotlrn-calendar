@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <message_catalog package_key="dotlrn-calendar" package_version="0.1a" locale="nl_NL" charset="ISO-8859-1">
 
   <msg key="Day_Summary">Dagoverzicht</msg>
