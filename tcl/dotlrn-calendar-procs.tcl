@@ -113,6 +113,7 @@ namespace eval dotlrn_calendar {
 	set element_id \
                 [portal::add_element \
                 		-pretty_name [get_pretty_name] \
+                                -force_region 2 \
                                 $portal_template_id \
                                 [calendar_portlet::my_name]]
 
