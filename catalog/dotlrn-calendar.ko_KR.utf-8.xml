@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<message_catalog package_key="dotlrn-calendar" package_version="2.0.3" locale="ko_KR" charset="utf-8">
+<message_catalog package_key="dotlrn-calendar" package_version="2.1.0b1" locale="ko_KR" charset="utf-8">
 
   <msg key="Day_Summary">오늘의 일정</msg>
 </message_catalog>

@@ -307,8 +307,26 @@ ad_proc -public dotlrn_calendar::remove_user {
     user_id
 } {
     Remove a user from dotlrn
+
+    @author Deds Castillo (deds@i-manila.com.ph)
+    @creation-date 2004-08-12
 } {
-    ad_return_complaint 1 "[applet_key] remove_user not implimented!"
+    # reverse the things done by add_user
+    set calendar_id [calendar_have_private_p -return_id 1 $user_id]
+    
+    if {$calendar_id} {
+        calendar::get -calendar_id $calendar_id -array calendar_info
+        set dotlrn_calendar_package_id [parameter::get_from_package_key -package_key [my_package_key] -parameter main_calendar_package_id]
+        
+        # make sure the calendar we got belong to the package in
+        # dotlrn or we may end up deleting some other calendar
+        if {$calendar_info(package_id) == $dotlrn_calendar_package_id} {
+            # remove the mapping
+            site_node_object_map::del -object_id $calendar_id
+            # remove the calendar
+            calendar::delete -calendar_id $calendar_id
+        }
+    }
 }
 
 ad_proc -public dotlrn_calendar::add_user_to_community {
