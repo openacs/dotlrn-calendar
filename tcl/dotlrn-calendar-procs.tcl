@@ -243,6 +243,14 @@ namespace eval dotlrn_calendar {
     }
 
     ad_proc -public remove_user {
+        user_id
+    } {
+        Remove a user entirely
+    } {
+        # FIXME: nothing for now
+    }
+
+    ad_proc -public remove_user_from_community {
 	community_id
 	user_id
     } {
