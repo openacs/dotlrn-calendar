@@ -14,16 +14,11 @@
 --  details.
 --
 
-
---
--- The calendar applet for dotLRN
--- copyright 2001, OpenForce
--- distributed under GPL v2.0
---
+-- The dotlrn-calendar applet's implimentation of the dotlrn applet contract
 --
 -- ben,arjun@openforce.net
 --
--- 10/05/2001
+-- $Id$
 --
 
 
@@ -36,8 +31,6 @@ begin
 		'dotlrn_calendar',
 		'dotlrn_calendar'
 	);
-
-	-- add all the hooks
 
 	-- GetPrettyName
 	foo := acs_sc_impl.new_alias (
@@ -57,6 +50,15 @@ begin
 	       'TCL'
 	);
 
+	-- RemoveApplet
+	foo := acs_sc_impl.new_alias (
+	       'dotlrn_applet',
+	       'dotlrn_calendar',
+	       'RemoveApplet',
+	       'dotlrn_calendar::remove_applet',
+	       'TCL'
+	);
+
 	-- AddAppletToCommunity
 	foo := acs_sc_impl.new_alias (
 	       'dotlrn_applet',
@@ -66,12 +68,12 @@ begin
 	       'TCL'
 	);
 
-	-- RemoveApplet
+	-- RemoveAppletFromCommunity
 	foo := acs_sc_impl.new_alias (
 	       'dotlrn_applet',
 	       'dotlrn_calendar',
-	       'RemoveApplet',
-	       'dotlrn_calendar::remove_applet',
+	       'RemoveAppletFromCommunity',
+	       'dotlrn_calendar::remove_applet_from_community',
 	       'TCL'
 	);
 
@@ -84,21 +86,21 @@ begin
 	       'TCL'
 	);
 
-	-- AddUserToCommunity
-	foo := acs_sc_impl.new_alias (
-	       'dotlrn_applet',
-	       'dotlrn_calendar',
-	       'AddUserToCommunity',
-	       'dotlrn_calendar::add_user_to_community',
-	       'TCL'
-	);
-
 	-- RemoveUser
 	foo := acs_sc_impl.new_alias (
 	       'dotlrn_applet',
 	       'dotlrn_calendar',
 	       'RemoveUser',
 	       'dotlrn_calendar::remove_user',
+	       'TCL'
+	);
+
+	-- AddUserToCommunity
+	foo := acs_sc_impl.new_alias (
+	       'dotlrn_applet',
+	       'dotlrn_calendar',
+	       'AddUserToCommunity',
+	       'dotlrn_calendar::add_user_to_community',
 	       'TCL'
 	);
 
