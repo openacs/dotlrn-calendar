@@ -72,7 +72,7 @@ namespace eval dotlrn_calendar {
                     -value $package_id
         }
 
-        dotlrn_applet::add_applet_to_dotlrn -applet_key [applet_key]
+        dotlrn_applet::add_applet_to_dotlrn -applet_key [applet_key] -package_key [my_package_key]
     }
 
     ad_proc -public remove_applet {
@@ -124,7 +124,7 @@ namespace eval dotlrn_calendar {
         #
         # automount calendar in this community
         set node_id [site_node::get_node_id \
-            -url [site_node::get_url_from_object_id -object_id [dotlrn_community::get_package_id $community_id]] \
+            -url [lindex [site_node::get_url_from_object_id -object_id [dotlrn_community::get_package_id $community_id]] 0] \
         ]
 
         set package_id [dotlrn::mount_package \
@@ -151,9 +151,9 @@ namespace eval dotlrn_calendar {
                 -node_id $attachments_node_id \
                 -object_id [apm_package_id_from_key attachments]
 
-            set fs_package_id [dotlrn::get_community_applet_package_id \
+            set fs_package_id [dotlrn_community::get_applet_package_id \
                  -community_id $community_id \
-                 -package_key [dotlrn_fs::package_key]
+                 -applet_key [dotlrn_fs::applet_key]
             ]
                                      
             # map the fs root folder to the package_id of the new forums pkg
