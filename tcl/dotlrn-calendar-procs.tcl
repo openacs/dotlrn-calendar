@@ -102,6 +102,9 @@ namespace eval dotlrn_calendar {
 
 	# Allow user to see the public calendar XXX
 
+	# Make calenadar DS available to this page
+	calendar_portlet::make_self_available $page_id
+
 	# Call the portal element to be added correctly
 	calendar_portlet::add_self_to_page $page_id $calendar_id 
     }
@@ -120,6 +123,9 @@ namespace eval dotlrn_calendar {
 
 	# Remove the portal element
 	calendar_portlet::remove_self_from_page $page_id $package_id
+
+	# Buh Bye.
+	calendar_portlet::make_self_unavailable $page_id
 
 	# remove user permissions to see calendar folders
 	# nothing to do here
