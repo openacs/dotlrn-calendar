@@ -483,18 +483,12 @@ namespace eval dotlrn_calendar {
     ad_proc -public get_user_default_page {} {
         The "full calendar" portlet must go on this page of a user's portal
     } {
-        return [parameter::get_from_package_key \
-                    -package_key [my_package_key] \
-                    -parameter "user_default_page"
-        ]
+        return "#dotlrn.user_portal_page_calendar_title#"
     }
 
     ad_proc -public get_community_default_page {} {
         The "full calendar" portlet must go on this page of a comm's portal
     } {
-        return [parameter::get_from_package_key \
-                    -package_key [my_package_key] \
-                    -parameter "user_default_page"
-        ]
+        return "#dotlrn.club_page_calendar_title#"
     }
 }
