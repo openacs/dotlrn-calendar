@@ -172,7 +172,7 @@ namespace eval dotlrn_calendar {
             calendar_portlet::make_self_available $workspace_portal_id
 
             set element_id  [calendar_portlet::add_self_to_page \
-                    -page_id [portal::get_page_id -portal_id $portal_id -page_name [get_user_default_page]] \
+                    -page_id [portal::get_page_id -portal_id $workspace_portal_id -page_name [get_user_default_page]] \
                     $workspace_portal_id \
                     $calendar_id]
         }
