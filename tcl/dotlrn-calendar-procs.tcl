@@ -133,7 +133,7 @@ namespace eval dotlrn_calendar {
 
 	set admin_segment_id [dotlrn_community::get_rel_segment_id -community_id $community_id -rel_type dotlrn_admin_rel]
 	ad_permission_grant $admin_segment_id $group_calendar_id calendar_admin
-        ns_log notice "aks16 granted"
+        # ns_log notice "aks16 granted"
 
 	return $group_calendar_id
     }
@@ -175,8 +175,15 @@ namespace eval dotlrn_calendar {
         if { $workspace_portal_id != "" } {
             calendar_portlet::make_self_available $workspace_portal_id
 
+            # (ben) I changed this to be added to the front page now, because
+            # the one we're adding to calendar is the full calendar thing, not the summary
             set element_id  [calendar_portlet::add_self_to_page \
-                    -page_id [portal::get_page_id -portal_id $workspace_portal_id -page_name [get_user_default_page]] \
+                    $workspace_portal_id \
+                    $calendar_id]
+
+            set element_id [calendar_full_portlet::add_self_to_page \
+                    -page_id [portal::get_page_id -portal_id $workspace_portal_id \
+                    -page_name [get_user_default_page]] \
                     $workspace_portal_id \
                     $calendar_id]
         }
@@ -206,6 +213,7 @@ namespace eval dotlrn_calendar {
 	calendar_portlet::add_self_to_page \
                 $portal_id $g_cal_id
 
+
 	# Now for the user workspace
 	# set this calendar_id in the workspace portal
         set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
@@ -214,13 +222,15 @@ namespace eval dotlrn_calendar {
         # ws portal's calendar portal element
         if { $workspace_portal_id != "" } {
             calendar_portlet::add_self_to_page $workspace_portal_id $g_cal_id
+
+            calendar_full_portlet::add_self_to_page $workspace_portal_id $g_cal_id
         }
 
         # aks debug 
-        ns_log notice "aks13 $user_id $g_cal_id calendar_read"
+        # ns_log notice "aks13 $user_id $g_cal_id calendar_read"
 	ad_permission_grant $user_id $g_cal_id calendar_read        
 	ad_permission_grant $user_id $g_cal_id calendar_show        
-        ns_log notice "aks14 read + show granted to user $user_id and cal $g_cal_id"
+        # ns_log notice "aks14 read + show granted to user $user_id and cal $g_cal_id"
 
     }
 
@@ -248,6 +258,7 @@ namespace eval dotlrn_calendar {
         # Remove the portlet
         if {![empty_string_p $workspace_portal_id]} {
             calendar_portlet::remove_self_from_page $workspace_portal_id $package_id
+            calendar_full_portlet::remove_self_from_page $workspace_portal_id $package_id
         }
     }
 	
