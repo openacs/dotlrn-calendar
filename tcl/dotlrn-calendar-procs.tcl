@@ -98,7 +98,9 @@ namespace eval dotlrn_calendar {
 	# create a private calendar for the user
 	set community_name \
 		"Your Calendar for [dotlrn_community::get_community_name]"
-	set calendar_id [calendar_create $user_id "t" $community_name]
+
+	# temporary hack by ben to make calendar unique (FIXME)
+	set calendar_id [calendar_create $user_id "t" "$community_name-$user_id"]
 
 	# XXX - aks - public calendar params here?
 
