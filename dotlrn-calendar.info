@@ -17,13 +17,15 @@
         <provides url="dotlrn-calendar" version="0.1a"/>
         <requires url="calendar-portlet" version="0.1a"/>
         <requires url="dotlrn" version="1.0"/>
+        <requires url="dotlrn-fs" version="0.1a"/>
 
         <files>
             <file type="package_spec" path="dotlrn-calendar.info"/>
             <file type="data_model_create" db_type="oracle" path="sql/oracle/dotlrn-calendar-create.sql"/>
             <file type="data_model_create" db_type="postgresql" path="sql/postgresql/dotlrn-calendar-create.sql"/>
+            <file type="query_file" db_type="oracle" path="tcl/dotlrn-calendar-procs-oracle.xql"/>
+            <file type="query_file" db_type="postgresql" path="tcl/dotlrn-calendar-procs-postgresql.xql"/>
             <file type="tcl_procs" path="tcl/dotlrn-calendar-procs.tcl"/>
-            <file type="query_file" path="tcl/dotlrn-calendar-procs.xql"/>
         </files>
         <parameters>
             <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="user_default_page"  default="Calendar" description="Default Page for addition of the portlet"/>
