@@ -96,7 +96,7 @@ namespace eval dotlrn_calendar {
                 -parent_node_id $node_id \
                 -package_key [package_key] \
                 -url [package_key] \
-                -directory_p "f"        
+                -directory_p "t"        
         
 	return $group_calendar_id
     }
