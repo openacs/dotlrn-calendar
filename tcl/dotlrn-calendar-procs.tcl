@@ -177,17 +177,22 @@ namespace eval dotlrn_calendar {
     } {
 	Called once when a user is added as a dotlrn user
     } {
-        # this is lame, but I can't find a proc to do this
-        set user_name [db_string user_name_select {
-	select first_names || ' ' || last_name as name
-	from persons
-	where person_id = :user_id
-        }]
+	# Check if there is a calendar ID
+	set calendar_id [calendar_have_private_p -return_id 1 $user_id]
 
-	# create a private, global calendar for this user
-	set cal_name "$user_name's Personal Calendar"
- 	set calendar_id [calendar_create $user_id "t" $cal_name]
-
+	if {$calendar_id == 0} {
+	    # this is lame, but I can't find a proc to do this
+	    set user_name [db_string user_name_select "
+		select first_names || ' ' || last_name as name
+		from persons
+		where person_id = :user_id
+	    "]
+	    
+	    # create a private, global calendar for this user
+	    set cal_name "$user_name's Personal Calendar"
+	    set calendar_id [calendar_create $user_id "t" $cal_name]
+	}
+	
 	# add this PE to the user's workspace!
 	set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
 
