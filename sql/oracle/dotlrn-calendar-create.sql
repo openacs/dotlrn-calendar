@@ -27,9 +27,9 @@ declare
 begin
 	-- create the implementation
 	foo := acs_sc_impl.new (
-		'dotlrn_applet',
-		'dotlrn_calendar',
-		'dotlrn_calendar'
+		impl_contract_name => 'dotlrn_applet',
+		impl_name => 'dotlrn_calendar',
+		impl_owner_name => 'dotlrn_calendar'
 	);
 
 	-- GetPrettyName
