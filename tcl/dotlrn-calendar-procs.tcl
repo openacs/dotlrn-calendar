@@ -46,7 +46,7 @@ namespace eval dotlrn_calendar {
     } {
 	returns the pretty name
     } {
-	return "dotLRN Calendar"
+	return "Calendar"
     }
 
     ad_proc -public get_user_default_page {} {
