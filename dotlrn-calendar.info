@@ -10,11 +10,12 @@
     <version name="0.1a" url="http://openforce.net/software/dotlrn/dotlrn-calendar/0.1">
     <database-support>
         <database>oracle</database>
+        <database>postgresql</database>
     </database-support>
         <owner url="mailto:arjun@openforce.net">Arjun Sanyal</owner>
         <summary>blah blah</summary>
 
-	<provides url="dotlrn-calendar" version="0.1a"/>
+        <provides url="dotlrn-calendar" version="0.1a"/>
         <requires url="calendar-portlet" version="0.1a"/>
 
         <files>
@@ -23,7 +24,7 @@
             <file type="tcl_procs" path="tcl/dotlrn-calendar-procs.tcl"/>
         </files>
         <parameters>
-        <!-- No version parameters -->
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="user_default_page"  default="Calendar" description="Default Page for addition of the portlet"/>
         </parameters>
 
     </version>

@@ -45,6 +45,12 @@ namespace eval dotlrn_calendar {
 	return "dotLRN Calendar"
     }
 
+    ad_proc -public get_user_default_page {} {
+        return the user default page to add the portlet to
+    } {
+        return [ad_parameter -package_id [apm_package_id_from_key dotlrn-calendar] user_default_page]
+    }
+
     ad_proc -public add_applet {
     } {
 	Called for one time init - must be repeatable!
@@ -90,6 +96,10 @@ namespace eval dotlrn_calendar {
 		[portal::add_element $portal_template_id \
 		[calendar_portlet::my_name]]
 
+	# set the group_calendar_id parameter in the portal template,
+	portal::set_element_param \
+		$element_id "group_calendar_id" $group_calendar_id
+
         # Add the admin portlet, too
 	set admin_portal_id \
 		[dotlrn_community::get_community_admin_portal_id $community_id]
@@ -99,10 +109,6 @@ namespace eval dotlrn_calendar {
 	set element_id \
 		[portal::add_element $admin_portal_id \
 		[calendar_admin_portlet::my_name]]
-
-	# set the group_calendar_id parameter in the portal template,
-	portal::set_element_param \
-		$element_id "group_calendar_id" $group_calendar_id
 
         # automount calendar in this community
         set node_id [site_nodes::get_node_id_from_url \
@@ -191,7 +197,9 @@ namespace eval dotlrn_calendar {
 	calendar_portlet::make_self_available $portal_id
 
 	# Call the portal element to be added correctly
-	calendar_portlet::add_self_to_page $portal_id $g_cal_id
+	calendar_portlet::add_self_to_page \
+                -page_id [portal::get_page_id -portal_id $portal_id -page_name [get_user_default_page]] \
+                $portal_id $g_cal_id
 
 	# Now for the user workspace
 	# set this calendar_id in the workspace portal
