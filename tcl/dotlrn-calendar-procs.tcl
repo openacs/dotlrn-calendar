@@ -432,6 +432,31 @@ namespace eval dotlrn_calendar {
         db_dml copy_cal_item_types {}
     }
 
+    ad_proc -public change_event_handler {
+        community_id
+        event
+        old_value
+        new_value
+    } { 
+        listens for the following events: rename
+    } { 
+        switch $event {
+            rename {
+                handle_rename -community_id $community_id -old_value $old_value -new_value $new_value
+            }
+        }
+    }   
+
+    ad_proc -private handle_rename {
+        {-community_id:required}
+        {-old_value:required}
+        {-new_value:required}
+    } {
+        what to do in calendar when a dotlrn community is renamed
+    } {
+        calendar::rename -calendar_id [get_group_calendar_id -community_id $community_id] -name $new_value
+    }
+
     #
     # Some dotlrn_calendar specific procs
     #
