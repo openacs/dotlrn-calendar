@@ -91,29 +91,21 @@ namespace eval dotlrn_calendar {
     } {
 	Add a user to a community
     } {
-	# Get the page_id by callback
 	set page_id [dotlrn_community::get_page_id $community_id $user_id]
-	
-	# Get the package_id by callback
-	set package_id [dotlrn_community::get_applet_package_id $community_id dotlrn_calendar]
+	set package_id [dotlrn_community::get_applet_package_id \
+		$community_id dotlrn_calendar]
 
 	# create a private calendar for the user
-	
-	# first get the community name from dotlrn
-	set community_name "Your Calendar for "
-	append community_name [db_exec_plsql get_community_name "
-	begin
-	:1 := dotlrn_community.name(:community_id);
-	end;"]
-
+	set community_name \
+		"Your Calendar for [dotlrn_community::get_community_name]"
 	set calendar_id [calendar_create $user_id "t" $community_name]
 
-	# Allow user to see the public calendar XXX
+	# XXX - aks - public calendar params here?
 
-	# Make calenadar DS available to this page
+	# Add the calendar DS to the user's portal. 
 	calendar_portlet::make_self_available $page_id
 
-	# Call the portal element to be added correctly
+	# This will copy the params from the portal template if exists
 	calendar_portlet::add_self_to_page $page_id $calendar_id 
     }
 
