@@ -58,6 +58,11 @@ namespace eval dotlrn_calendar {
                     -url [package_key] \
                     -directory_p "t"
 	}
+
+        # register/activate self with dotlrn
+        # our service contract is in the db, but we must tell dotlrn
+        # that we exist and want to be active
+        dotlrn_community::add_applet_to_dotlrn -applet_key "dotlrn_calendar"
     }
 
     ad_proc -public add_applet_to_community {
@@ -71,6 +76,8 @@ namespace eval dotlrn_calendar {
 	# create the community's calendar, the "f" is for a public calendar
 	set group_calendar_id \
 		[calendar_create [ad_conn "user_id"] "f" $cal_name]
+
+        ns_log notice "aks14 $cal_name: group_calendar_id $group_calendar_id"
 
 	# add this element to the portal template. 
 	# do this directly, don't use calendar_portlet::add_self_to_page here
@@ -92,12 +99,22 @@ namespace eval dotlrn_calendar {
                 -url [dotlrn_community::get_url_from_package_id \
                 -package_id [dotlrn_community::get_package_id $community_id]]]
         
-        dotlrn::mount_package \
+        set package_id [dotlrn::mount_package \
                 -parent_node_id $node_id \
                 -package_key [package_key] \
                 -url [package_key] \
-                -directory_p "t"        
+                -directory_p "t"]
         
+        # Becase the context_id of calendar dosen't point to the community
+        # the calendar_admin perm is not automatically inherited (like
+        # in bboard for example) We must do an explicit grant to the
+        # dotlrn_admin_rel relational segment. dotlrn_ta_rel and dotlrn_instructor_rel
+        # both inherit from the dotlrn_admin_rel, so we don't have to grant to them.
+
+	set admin_segment_id [dotlrn_community::get_rel_segment_id -community_id $community_id -rel_type dotlrn_admin_rel]
+	ad_permission_grant $admin_segment_id $group_calendar_id calendar_admin
+        ns_log notice "aks16 granted"
+
 	return $group_calendar_id
     }
 
@@ -116,14 +133,19 @@ namespace eval dotlrn_calendar {
     }
 
     ad_proc -public add_user {
-	community_id
 	user_id
     } {
 	Called once when a user is added as a dotlrn user
     } {
+        # this is lame, but I can't find a proc to do this
+        set user_name [db_string user_name_select {
+	select first_names || ' ' || last_name as name
+	from persons
+	where person_id = :user_id
+        }]
 
 	# create a private, global calendar for this user
-	set cal_name "Your dotLRN Calendar"
+	set cal_name "$user_name's Personal Calendar"
  	set calendar_id [calendar_create $user_id "t" $cal_name]
 
 	# add this PE to the user's workspace!
@@ -136,6 +158,7 @@ namespace eval dotlrn_calendar {
                     $workspace_portal_id \
                     $calendar_id]
         }
+
     }
 
     ad_proc -public add_user_to_community {
@@ -169,6 +192,13 @@ namespace eval dotlrn_calendar {
         if { $workspace_portal_id != "" } {
             calendar_portlet::add_self_to_page $workspace_portal_id $g_cal_id
         }
+
+        # aks debug 
+        ns_log notice "aks13 $user_id $g_cal_id calendar_read"
+	ad_permission_grant $user_id $g_cal_id calendar_read        
+	ad_permission_grant $user_id $g_cal_id calendar_show        
+        ns_log notice "aks14 read + show granted to user $user_id and cal $g_cal_id"
+
     }
 
     ad_proc -public remove_user {
