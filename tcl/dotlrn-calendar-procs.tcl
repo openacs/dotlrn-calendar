@@ -130,10 +130,12 @@ namespace eval dotlrn_calendar {
 	set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
 
 	# Add the portlet here
-        calendar_portlet::make_self_available $workspace_portal_id
-	set element_id  [calendar_portlet::add_self_to_page \
-		$workspace_portal_id \
-		$calendar_id]
+        if { $workspace_portal_id != "" } {
+            calendar_portlet::make_self_available $workspace_portal_id
+            set element_id  [calendar_portlet::add_self_to_page \
+                    $workspace_portal_id \
+                    $calendar_id]
+        }
     }
 
     ad_proc -public add_user_to_community {
@@ -164,7 +166,9 @@ namespace eval dotlrn_calendar {
         
         # get the comm's calendar_id, and add it as a param to the
         # ws portal's calendar portal element
-        calendar_portlet::add_self_to_page $wsp_id $g_cal_id
+        if { $workspace_portal_id != "" } {
+            calendar_portlet::add_self_to_page $wsp_id $g_cal_id
+        }
     }
 
     ad_proc -public remove_user {
