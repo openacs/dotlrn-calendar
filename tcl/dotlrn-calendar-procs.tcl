@@ -363,12 +363,16 @@ namespace eval dotlrn_calendar {
         ns_log notice "Cloning: [applet_key]"
 
         # copy the old_comm's item types table
-        set old_calendar_id [get_group_calendar_id -community_id $old_calendar_id]
+        set old_calendar_id [get_group_calendar_id \
+            -community_id $old_community_id
+        ]
+        
+        set calendar_id [calendar_create_helper -community_id $new_community_id]
+
         db_dml copy_cal_item_types {}
 
-        set calendar_id [calendar_create_helper -community_id $community_id]
         return [add_applet_to_community_helper \
-                    -community_id $community_id \
+                    -community_id $new_community_id \
                     -calendar_id $calendar_id
        ]
     }
