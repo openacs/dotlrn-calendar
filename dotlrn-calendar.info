@@ -20,7 +20,7 @@
         <requires url="dotlrn-fs" version="0.1a"/>
 
         <parameters>
-            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="user_default_page"  default="My Calendar" description="Default Page for addition of the portlet"/>
+            <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="user_default_page"  default="Calendar" description="Default Page for addition of the portlet"/>
             <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="main_calendar_package_id"  description="The package_id of calendar mounted right under dotLRN"/>
         </parameters>
 
