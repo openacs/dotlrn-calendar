@@ -107,13 +107,17 @@ namespace eval dotlrn_calendar {
         # Add the admin portlet, too
 	set admin_portal_id \
 		[dotlrn_community::get_community_admin_portal_id $community_id]
-	
+
 	calendar_admin_portlet::make_self_available $admin_portal_id
 
 	set element_id \
 		[portal::add_element $admin_portal_id \
 		[calendar_admin_portlet::my_name]]
 
+	# set the group_calendar_id parameter in the admin portal.
+	portal::set_element_param \
+		$element_id "calendar_id" $group_calendar_id
+	
         # automount calendar in this community
         set node_id [site_nodes::get_node_id_from_url \
                 -url [dotlrn_community::get_url_from_package_id \
