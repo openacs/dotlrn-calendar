@@ -72,7 +72,7 @@ namespace eval dotlrn_calendar {
         # register/activate self with dotlrn
         # our service contract is in the db, but we must tell dotlrn
         # that we exist and want to be active
-        dotlrn_community::add_applet_to_dotlrn -applet_key [applet_key]
+        dotlrn_applet::add_applet_to_dotlrn -applet_key [applet_key]
     }
 
     ad_proc -public add_applet_to_community {
