@@ -133,6 +133,12 @@ namespace eval dotlrn_calendar {
                 -url [package_key] \
                 -directory_p "t"]
 
+	# Break security inheritance for the newly created calendar
+	# object to explicitly take the create permission from
+	# regular users. In the following steps' admin' is granted to
+	# admins and 'read' to regular users.
+	permission::set_not_inherit -object_id $package_id
+
         # mount attachments under calendar, if available
         # attachments requires that dotlrn-fs is already mounted 
         if {[apm_package_registered_p attachments]
@@ -179,18 +185,16 @@ namespace eval dotlrn_calendar {
                     -name [package_key]] \
                 -object_id $calendar_id
 
-        # Becase the context_id of calendar dosen't point to the community
-        # the calendar_admin perm is not automatically inherited (like
-        # in bboard for example) We must do an explicit grant to the
-        # dotlrn_admin_rel relational segment. dotlrn_ta_rel and dotlrn_instructor_rel
-        # both inherit from the dotlrn_admin_rel, so we don't have to grant to them.
+	# Explicitly grant admin to community admins and read to community members.
+	# Admins have full rights on this calendar package then, community members
+	# may only read.
         set admin_segment_id [dotlrn_community::get_rel_segment_id \
                 -community_id $community_id \
                 -rel_type dotlrn_admin_rel
         ]
         permission::grant \
                 -party_id $admin_segment_id \
-                -object_id $calendar_id \
+                -object_id $package_id \
                 -privilege "admin"
 
         # same thing for reading, cause it's not granted by context_id (ben)
@@ -200,9 +204,8 @@ namespace eval dotlrn_calendar {
         ]
         permission::grant \
                 -party_id $members_segment_id \
-                -object_id $calendar_id \
+                -object_id $package_id \
                 -privilege "read"
-
         # 
         # ** portlet stuff **
         # 
