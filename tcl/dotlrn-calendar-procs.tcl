@@ -269,5 +269,29 @@ namespace eval dotlrn_calendar {
             calendar_full_portlet::remove_self_from_page $workspace_portal_id $package_id
         }
     }
-	
+
+    #
+    # Some dotlrn_calendar specific procs
+    # 
+    
+    ad_proc -public get_group_calendar_id {
+        {-community_id:required}
+    } {
+        Find the group_calendar_id for the given community
+    } {
+
+        # get the portal_template_id for this comm
+        set portal_template_id [dotlrn_community::get_portal_template_id $community_id]
+
+        # get the calendar element for this community
+        set element_id [portal::get_element_ids_by_ds \
+                $portal_template_id \
+                [calendar_portlet::my_name]]
+
+        #  [lindex element_ids 0] 
+        return [portal::get_element_param $element_id "group_calendar_id"]
+    }
+
+
+
 }
