@@ -355,7 +355,7 @@ namespace eval dotlrn_calendar {
         
         if {[string equal $type "user"]} {
             # the portlet has a special name on a user portal
-            ns_set put $args pretty_name "[_ dotlrn-calendar.Day_Summary]"
+            ns_set put $args pretty_name "#dotlrn-calendar.Day_Summary#"
             ns_set put $args full_portlet_page_name [get_user_default_page]
             ns_set put $args scoped_p t
         }  else {
