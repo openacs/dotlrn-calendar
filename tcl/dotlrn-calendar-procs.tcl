@@ -123,9 +123,9 @@ namespace eval dotlrn_calendar {
         # ** setup stuff **
         #
         # automount calendar in this community
-        set node_id [site_nodes::get_node_id_from_url \
-                -url [dotlrn_community::get_url_from_package_id \
-                -package_id [dotlrn_community::get_package_id $community_id]]]
+        set node_id [site_node::get_node_id \
+            -url [site_node::get_url_from_object_id -object_id [dotlrn_community::get_package_id $community_id]] \
+        ]
 
         set package_id [dotlrn::mount_package \
                 -parent_node_id $node_id \
