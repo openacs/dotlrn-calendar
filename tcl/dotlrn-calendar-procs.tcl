@@ -208,7 +208,7 @@ namespace eval dotlrn_calendar {
                 [lindex [portal::get_element_ids_by_ds \
                 [portal::get_portal_template_id $portal_id] \
                 [calendar_portlet::my_name]] 0] \
-                "group_calendar_id"]
+                "calendar_id"]
 
 	# Make the calendar DS available to this page
 	calendar_portlet::make_self_available $portal_id
@@ -297,7 +297,7 @@ namespace eval dotlrn_calendar {
                 [calendar_portlet::my_name]]
 
         #  [lindex element_ids 0] 
-        return [portal::get_element_param $element_id "group_calendar_id"]
+        return [portal::get_element_param $element_id "calendar_id"]
     }
 
 
