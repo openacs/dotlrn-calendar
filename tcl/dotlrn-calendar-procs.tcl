@@ -378,6 +378,7 @@ namespace eval dotlrn_calendar {
     } {
         set g_cal_id [get_group_calendar_id -community_id $community_id]
         set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
+
         calendar_portlet::remove_self_from_page $workspace_portal_id $g_cal_id
         calendar_full_portlet::remove_self_from_page $workspace_portal_id $g_cal_id
     }
