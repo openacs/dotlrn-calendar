@@ -265,7 +265,7 @@ namespace eval dotlrn_calendar {
         user_id
     } {
         Called once when a user is added as a dotlrn user.
-        Create a priivate, personal, global calendar for the
+        Create a private, personal, global calendar for the
         user if they don't have one, and add both calendar portlets
         to the user's portal
     } {
