@@ -130,12 +130,16 @@ namespace eval dotlrn_calendar {
         set group_calendar_id [calendar_create \
                 [ad_conn "user_id"] \
                 "f" \
-                "[dotlrn_community::get_community_name $community_id] Public Calendar"
+                "[dotlrn_community::get_community_name $community_id]"
         ]
 
         # set the group_calendar_id parameter in the comm's portal
         portal::set_element_param \
                 $element_id "calendar_id" $group_calendar_id
+
+        # This is not scoped, because we are only seeing one group calendar
+        portal::set_element_param \
+                $element_id "scoped_p" "f"
 
         set element_id [calendar_full_portlet::add_self_to_page \
                 -page_id $page_id  \
@@ -275,14 +279,14 @@ namespace eval dotlrn_calendar {
         
         if {$calendar_id == 0} {
             # this is lame, but I can't find a proc to do this
-            set user_name [db_string user_name_select "
-                select first_names || ' ' || last_name as name
-                from persons
-                where person_id = :user_id
-            "]
+#              set user_name [db_string user_name_select "
+#                  select first_names || ' ' || last_name as name
+#                  from persons
+#                  where person_id = :user_id
+#              "]
 
             # create a private, global calendar for this user
-            set cal_name "$user_name's Personal Calendar"
+            set cal_name "Personal"
             set calendar_id [calendar_create $user_id "t" $cal_name]
 
             # Here we map the calendar to the main dotlrn package
@@ -313,6 +317,9 @@ namespace eval dotlrn_calendar {
                 $workspace_portal_id \
                 $calendar_id
         ]
+
+        # Make sure this is scoped
+        portal::set_element_param $element_id scoped_p t
     }
 
     ad_proc -public remove_user {
