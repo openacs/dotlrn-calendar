@@ -16,6 +16,7 @@
 
         <provides url="dotlrn-calendar" version="0.1a"/>
         <requires url="calendar-portlet" version="0.1a"/>
+        <requires url="dotlrn" version="1.0"/>
 
         <files>
             <file type="package_spec" path="dotlrn-calendar.info"/>
