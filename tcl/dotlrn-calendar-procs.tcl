@@ -24,10 +24,10 @@ namespace eval dotlrn_calendar {
 	return "calendar"
     }
 
-    ad_proc -public applet_key {
+    ad_proc -public applet_key {} {
         return "dotlrn_calendar"
     }
-
+    
     ad_proc -public get_url {
     } {
 	get the package_key this applet deals with
