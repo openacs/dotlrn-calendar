@@ -102,7 +102,7 @@ namespace eval dotlrn_calendar {
 
 	# set the group_calendar_id parameter in the portal template,
 	portal::set_element_param \
-		$element_id "group_calendar_id" $group_calendar_id
+		$element_id "calendar_id" $group_calendar_id
 
         # Add the admin portlet, too
 	set admin_portal_id \
