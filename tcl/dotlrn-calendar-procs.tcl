@@ -199,12 +199,14 @@ namespace eval dotlrn_calendar {
         return $group_calendar_id
     }
 
-    ad_proc -public remove_applet {
+    ad_proc -public remove_applet_from_community {
         community_id
         package_id
     } {
         remove the applet from the community
     } {
+        ad_return_complaint 1 "aks1"
+
         # XXX
 
         # Remove all instances of the calendar portlet! (this is some
@@ -269,23 +271,24 @@ namespace eval dotlrn_calendar {
     } {
         Add a user to a community
     } {
-        # Get the portal_id by callback
+
+        # Get the user per comm portal_id by callback
         set portal_id [dotlrn_community::get_portal_id $community_id $user_id]
 
-        # get the group_calendar_id by callback
-        set g_cal_id [portal::get_element_param \
-                [lindex [portal::get_element_ids_by_ds \
-                [portal::get_portal_template_id $portal_id] \
-                [calendar_portlet::my_name]] 0] \
-                "calendar_id"]
+        if { [exists_and_not_null $portal_id] } {
+            # get the group_calendar_id by callback
+            set g_cal_id [portal::get_element_param \
+                    [lindex [portal::get_element_ids_by_ds \
+                    [portal::get_portal_template_id $portal_id] \
+                    [calendar_portlet::my_name]] 0] \
+                    "calendar_id"]
 
-        # Make the calendar DS available to this page
-        calendar_portlet::make_self_available $portal_id
+            # Make the calendar DS available to this page
+            calendar_portlet::make_self_available $portal_id
 
-        # Call the portal element to be added correctly
-        calendar_portlet::add_self_to_page \
-                $portal_id $g_cal_id
-
+            # Call the portal element to be added correctly
+            calendar_portlet::add_self_to_page $portal_id $g_cal_id
+        }
 
         # Now for the user workspace
         # set this calendar_id in the workspace portal
@@ -293,22 +296,13 @@ namespace eval dotlrn_calendar {
 
         # get the comm's calendar_id, and add it as a param to the
         # ws portal's calendar portal element
-        if { $workspace_portal_id != "" } {
+	if { [exists_and_not_null $workspace_portal_id] } {
             calendar_portlet::add_self_to_page $workspace_portal_id $g_cal_id
 
-            calendar_full_portlet::add_self_to_page $workspace_portal_id $g_cal_id
+            calendar_full_portlet::add_self_to_page \
+                    $workspace_portal_id \
+                    $g_cal_id
         }
-
-        # Ben's fix: we do NOT assign permissions individually
-        # This means I have to go fix the way permissions are assigned
-        # at applet creation time (ben)
-        #
-        # aks debug
-        # ns_log notice "aks13 $user_id $g_cal_id calendar_read"
-        # ad_permission_grant $user_id $g_cal_id calendar_read
-        # ad_permission_grant $user_id $g_cal_id calendar_show
-        # ns_log notice "aks14 read + show granted to user $user_id and cal $g_cal_id"
-
     }
 
     ad_proc -public remove_user {
