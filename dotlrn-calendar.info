@@ -13,7 +13,6 @@
         <database>postgresql</database>
     </database-support>
         <owner url="mailto:arjun@openforce.net">Arjun Sanyal</owner>
-        <summary>blah blah</summary>
 
         <provides url="dotlrn-calendar" version="0.1a"/>
         <requires url="calendar-portlet" version="0.1a"/>
