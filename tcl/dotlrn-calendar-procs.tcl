@@ -48,7 +48,7 @@ namespace eval dotlrn_calendar {
 	set package_id [dotlrn::instantiate_and_mount $community_id $package_key]
 
 	# first get the community name from dotlrn
-	set community_name "The [dotlrn_community::get_community_name] Calendar"
+	set community_name "The [dotlrn_community::get_community_name $community_id] Calendar"
 	
 	# create a community calendar, the "f" is for a public calendar
 	set group_calendar_id \
@@ -97,7 +97,7 @@ namespace eval dotlrn_calendar {
 
 	# create a private calendar for the user
 	set community_name \
-		"Your Calendar for [dotlrn_community::get_community_name]"
+		"Your Calendar for [dotlrn_community::get_community_name $community_id]"
 
 	# temporary hack by ben to make calendar unique (FIXME)
 	set calendar_id [calendar_create $user_id "t" "$community_name-$user_id"]
