@@ -109,7 +109,7 @@ namespace eval dotlrn_calendar {
                 -portlet_name [calendar_portlet::get_my_name]
         ]
 
-        # add the "full calendar" portlet to the commnuity's "calendar" page,
+        # add the "full calendar" portlet to the community's "calendar" page,
         # similar to the same thing on a user's wsp. use the get_user_def_page
         set page_name [get_user_default_page]
         if {[dotlrn_community::dummy_comm_p -community_id $community_id]} {
@@ -140,6 +140,17 @@ namespace eval dotlrn_calendar {
         set element_id [calendar_full_portlet::add_self_to_page \
                 -portal_id $portal_id \
                 -page_name $page_name  \
+                -calendar_id $group_calendar_id
+        ]
+
+        # This is not scoped, because we are only seeing one group calendar
+        portal::set_element_param \
+                $element_id "scoped_p" "f"
+
+        # Add the Class Schedule Portlet
+        set element_id [calendar_list_portlet::add_self_to_page \
+                -portal_id $portal_id \
+                -page_name $page_name \
                 -calendar_id $group_calendar_id
         ]
 
