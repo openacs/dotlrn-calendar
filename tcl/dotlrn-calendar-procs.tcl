@@ -132,8 +132,12 @@ namespace eval dotlrn_calendar {
         # both inherit from the dotlrn_admin_rel, so we don't have to grant to them.
 
 	set admin_segment_id [dotlrn_community::get_rel_segment_id -community_id $community_id -rel_type dotlrn_admin_rel]
-	ad_permission_grant $admin_segment_id $group_calendar_id calendar_admin
+	ad_permission_grant $admin_segment_id $group_calendar_id admin
         # ns_log notice "aks16 granted"
+
+        # same thing for reading, cause it's not granted by context_id (ben)
+        set members_segment_id [dotlrn_community::get_rel_segment_id -community_id $community_id -rel_type dotlrn_member_rel]
+        ad_permission_grant $members_segment_id $group_calendar_id read
 
 	return $group_calendar_id
     }
@@ -226,10 +230,14 @@ namespace eval dotlrn_calendar {
             calendar_full_portlet::add_self_to_page $workspace_portal_id $g_cal_id
         }
 
+        # Ben's fix: we do NOT assign permissions individually
+        # This means I have to go fix the way permissions are assigned
+        # at applet creation time (ben)
+        #
         # aks debug 
         # ns_log notice "aks13 $user_id $g_cal_id calendar_read"
-	ad_permission_grant $user_id $g_cal_id calendar_read        
-	ad_permission_grant $user_id $g_cal_id calendar_show        
+	# ad_permission_grant $user_id $g_cal_id calendar_read        
+	# ad_permission_grant $user_id $g_cal_id calendar_show        
         # ns_log notice "aks14 read + show granted to user $user_id and cal $g_cal_id"
 
     }
