@@ -41,56 +41,19 @@ namespace eval dotlrn_calendar {
     ad_proc -public add_applet {
     } {
 	Called for one time init - must be repeatable!
+	@return new pkg_id or 0 on failure
     } {
 
-	# XXX testing - abstract out
-	# only one instance of calendar for dotlrn, unlike other applets. 
-	#
-	# this is ugly, but the site_node proc throws errors on misses!
+	# XXX YYY testing
+        # the dotlrn packages is installed, but if it's not
 
-	set result ""
-	if {[catch {nsv_get site_nodes [apm_package_url_from_key "dotlrn"]} \
-		result] == 0} {
-	    ns_log notice "aks90: site_nodes array hit!"
-	} else {
-	    ns_log notice "aks90: site_node array miss: $result\n
-	    [apm_package_url_from_key "dotlrn"] \n
-	    nsv info: [nsv_array get site_nodes]"
+	# FIXME: won't work with multiple dotlrn instances
+	if {![dotlrn::is_package_mounted [package_key]]} {
+            dotlrn::mount_package \
+                    -package_key [package_key] \
+                    -url [package_key] \
+                    -directory_p "f"
 	}
-    
-	if {$result != 0} {
-	    ns_log warning "aks92: dotlrn_calendar::add_applet creating...!"
-#
-#	     db_transaction {
-#		 # calling directly since below proc has issues
-#		 # set node_id [site_node_create $dotlrn_node_id  "calendar"]
-#		 set new_node_id [db_nextval acs_object_id_seq]
-#		 set dotlrn_node_id [dotlrn::get_node_id]
-#		 set name "dotlrn-calendar"
-#
-#		 set node_id [db_exec_plsql create_cal_node {
-#		     begin
-#
-#		     :1 := site_node.new (
-#		     node_id => :new_node_id,
-#		     parent_id => :dotlrn_node_id,
-#		     name => :name,
-#		     directory_p => 'f');
-#		     end;
-#		 }]
-#		 
-#		 # instanciate calendar there
-#		 site_node_create_package_instance $node_id \
-#			 [get_pretty_name] \
-#			 [dotlrn::get_package_id] \
-#			 [package_key]
-#
-#	     }
-	} else {
-	    ns_log warning "aks92: dotlrn_calendar::add_applet already here!"
-	}
-
-	return 1
     }
 
     ad_proc -public add_applet_to_community {
@@ -167,7 +130,14 @@ namespace eval dotlrn_calendar {
 	set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
 
 	# Add the portlet here
-	calendar_portlet::add_self_to_page $workspace_portal_id $calendar_id
+	set element_id  [calendar_portlet::add_self_to_page \
+		$workspace_portal_id \
+		$calendar_id]
+
+	# the calendar element in the workspace has an offset
+	portal::set_element_param \
+		$element_id "$element_id-offset" 0
+
     }
 
     ad_proc -public add_user_to_community {
