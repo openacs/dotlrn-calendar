@@ -346,17 +346,16 @@ namespace eval dotlrn_calendar {
         
         @param portal_id
     } {
-        set args [ns_set create]
-        ns_set put $args calendar_id 0
-        ns_set put $args full_portlet_page_name [get_community_default_page]
-        ns_set put $args scoped_p f
-
         set type [dotlrn::get_type_from_portal_id -portal_id $portal_id]
         
+        set args [ns_set create]
+        ns_set put $args calendar_id 0
+        ns_set put $args full_portlet_page_name [get_default_page $type]
+        ns_set put $args scoped_p f
+
         if {[string equal $type "user"]} {
             # the portlet has a special name on a user portal
             ns_set put $args pretty_name "#dotlrn-calendar.Day_Summary#"
-            ns_set put $args full_portlet_page_name [get_user_default_page]
             ns_set put $args scoped_p t
         }  else {
             # add this portlet to all types of communities
@@ -480,15 +479,27 @@ namespace eval dotlrn_calendar {
         return [portal::get_element_param $element_id "calendar_id"]
     }
 
-    ad_proc -public get_user_default_page {} {
-        The "full calendar" portlet must go on this page of a user's portal
+    ad_proc -private get_default_page { portal_type } {
+        The pretty name of the page to add the portlet to.
     } {
-        return "#dotlrn.user_portal_page_calendar_title#"
-    }
+        switch $portal_type {
+            user {
+                set page_name "#dotlrn.user_portal_page_calendar_title#"
+            }
+            dotlrn_community {
+                set page_name "#dotlrn.subcomm_page_calendar_title#"
+            }
+            dotlrn_class_instance {
+                set page_name "#dotlrn.class_page_calendar_title#"
+            }
+            dotlrn_club {
+                set page_name "#dotlrn.club_page_calendar_title#"
+            }
+            default {
+                ns_log Error "dotlrn-calendar applet: Don't know page name to add portlet to for portal type $portal_type"
+            }
+        }
 
-    ad_proc -public get_community_default_page {} {
-        The "full calendar" portlet must go on this page of a comm's portal
-    } {
-        return "#dotlrn.club_page_calendar_title#"
+        return $page_name
     }
 }
