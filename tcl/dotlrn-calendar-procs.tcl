@@ -113,11 +113,10 @@ namespace eval dotlrn_calendar {
 	# 	set calendar_id [calendar_create $user_id "t" $community_name]
 
 	# add this PE to the user's workspace!
-	set workspace_page_id [dotlrn_community::get_workspace_page_id $user_id]
+	set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
+
 	# Add the portlet here
-	calendar_portlet::add_self_to_page $workspace_page_id $calendar_id
-
-
+	calendar_portlet::add_self_to_page $workspace_portal_id $calendar_id
     }
 
     ad_proc -public add_user_to_community {
@@ -133,12 +132,12 @@ namespace eval dotlrn_calendar {
 
 	# aks XXX
 	# add the portlet, to this user's community portal
-	set page_id [dotlrn_community::get_page_id $community_id $user_id]
+	set portal_id [dotlrn_community::get_portal_id $community_id $user_id]
 
 	# Add the calendar DS to the user's community portal. 
 	# This will copy the params from the portal template if exists
-	calendar_portlet::make_self_available $page_id
-	calendar_portlet::add_self_to_page $page_id $calendar_id 	
+	calendar_portlet::make_self_available $portal_id
+	calendar_portlet::add_self_to_page $portal_id $calendar_id 	
 
 	# temporary hack by ben to make calendar unique (FIXME)
 	set calendar_id [calendar_create $user_id "t" "$community_name-$user_id"]
@@ -157,17 +156,17 @@ namespace eval dotlrn_calendar {
     } {
 	Remove a user from a community
     } {
-	# Get the page_id
-	set page_id [dotlrn_community::get_page_id $community_id $user_id]
+	# Get the portal_id
+	set portal_id [dotlrn_community::get_portal_id $community_id $user_id]
 	
 	# Get the package_id by callback
 	set package_id [dotlrn_community::get_package_id $community_id]
 
 	# Remove the portal element
-	calendar_portlet::remove_self_from_page $page_id $package_id
+	calendar_portlet::remove_self_from_page $portal_id $package_id
 
 	# Buh Bye.
-	calendar_portlet::make_self_unavailable $page_id
+	calendar_portlet::make_self_unavailable $portal_id
 
 	# remove user permissions to see calendar folders
 	# nothing to do here
