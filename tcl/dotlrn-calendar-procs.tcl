@@ -237,31 +237,22 @@ namespace eval dotlrn_calendar {
 
         # remove the portlets, params will cascade
         # first the admin portlet, from the comm's admin portal
-        set admin_portal_id \
-                [dotlrn_community::get_admin_portal_id -community_id $community_id]
-        
-        set admin_element_id [portal::get_element_ids_by_ds \
-                $admin_portal_id \
-                [calendar_admin_portlet::get_my_name]
-        ] 
+        set admin_portal_id [dotlrn_community::get_admin_portal_id \
+                -community_id $community_id]
 
-        portal::remove_element $admin_element_id 
+        portal::remove_element \
+                -portal_id $admin_portal_id \
+                -portlet_name [calendar_admin_portlet::get_my_name]
 
         # now for the "regular" calendar portlet from the comm's portal
         set portal_id [dotlrn_community::get_portal_id \
                 -community_id $community_id
         ]
 
-        portal::remove_element [portal::get_element_ids_by_ds \
-                $portal_id \
-                [calendar_portlet::get_my_name]
-        ]
-
         # now for the "full calendar" portlet from the comm's portal
-        portal::remove_element [portal::get_element_ids_by_ds \
-                $portal_id \
-                [calendar_full_portlet::get_my_name]
-        ]
+        portal::remove_element \
+                -portal_id $portal_id \
+                -portlet_name [calendar_full_portlet::get_my_name]
         
         # and finally kill the group calendar
         calendar_delete -calendar_id $group_calendar_id
