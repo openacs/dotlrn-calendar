@@ -237,7 +237,9 @@ namespace eval dotlrn_calendar {
 
         # remove the portlets, params will cascade
         # first the admin portlet, from the comm's admin portal
-        set admin_portal_id [dotlrn_community::get_admin_portal_id -community_id $community_id]
+        set admin_portal_id [dotlrn_community::get_admin_portal_id \
+                                 -community_id $community_id
+        ]
 
         portal::remove_element \
             -portal_id $admin_portal_id \
