@@ -423,11 +423,12 @@ namespace eval dotlrn_calendar {
             -community_id $old_community_id
         ]
         
-        set results [add_applet_to_community_helper \
+        add_applet_to_community_helper \
                     -community_id $new_community_id
-        ]
 
-        set calendar_id [lindex $results 1]
+        set calendar_id [get_group_calendar_id \
+            -community_id $new_community_id
+        ]
 
         db_dml copy_cal_item_types {}
     }
