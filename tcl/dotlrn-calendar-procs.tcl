@@ -87,8 +87,6 @@ namespace eval dotlrn_calendar {
 	set group_calendar_id \
 		[calendar_create [ad_conn "user_id"] "f" $cal_name]
 
-        ns_log notice "aks14 $cal_name: group_calendar_id $group_calendar_id"
-
 	# add this element to the portal template. 
 	# do this directly, don't use calendar_portlet::add_self_to_page here
 	set portal_template_id \
@@ -103,6 +101,20 @@ namespace eval dotlrn_calendar {
 	# set the group_calendar_id parameter in the portal template,
 	portal::set_element_param \
 		$element_id "calendar_id" $group_calendar_id
+
+        # add the "full calendar" portlet to the commnuity's "calendar" page, 
+        # similar to the same thing on a user's wsp. use the get_user_def_page
+        # func here too
+        set page_id [portal::get_page_id \
+                         -portal_id $portal_template_id \
+                         -page_name [get_user_default_page] \
+        ]
+
+        set element_id [calendar_full_portlet::add_self_to_page \
+                           -page_id $page_id  \
+                           $portal_template_id \
+                           $group_calendar_id 
+        ]
 
         # Add the admin portlet, too
 	set admin_portal_id \
