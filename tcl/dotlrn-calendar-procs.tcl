@@ -47,17 +47,29 @@ namespace eval dotlrn_calendar {
 	set package_key [package_key]
 	set package_id [dotlrn::instantiate_and_mount $community_id $package_key]
 
-	# XXX - set up a public calendar inside that instance
-#	 
-#	 # first get the community name from dotlrn
-#	 set community_name [db_exec_plsql get_community_name "
-#	 begin
-#	 :1 := dotlrn_community.name(:node_id);
-#	 end;"]
-#
-#	 set calendar_id [calendar_create [ad_conn user_id] "f" $community_name]
-#	 
-	# return the package_id
+	# first get the community name from dotlrn
+	set community_name "The [dotlrn_community::get_community_name] Calendar"
+	
+	# create a community calendar, the "f" is for a public calendar
+	set group_calendar_id \
+		[calendar_create [ad_conn "user_id"] "f" $community_name]
+
+	# add this element to the portal template. 
+	# do this directly, don't use calendar_portlet::add_self_to_page here
+	set portal_template_id \
+		[dotlrn_community::get_portal_template_id $community_id]
+	
+	calendar_portlet::make_self_available $portal_template_id
+
+	set element_id \
+		[portal::add_element $portal_template_id \
+		[calendar_portlet::my_name]]
+
+	# set the group_calendar_id parameter in the portal template,
+	# which will be copied to every user after this
+	portal::set_element_param \
+		$element_id "group_calendar_id" $group_calendar_id
+
 	return $package_id
     }
 
