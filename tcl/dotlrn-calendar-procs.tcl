@@ -59,10 +59,17 @@ namespace eval dotlrn_calendar {
         # FIXME: won't work with multiple dotlrn instances
         # Use the package_key for the -url param - "/" are not allowed!
         if {![dotlrn::is_package_mounted -package_key [package_key]]} {
-            dotlrn::mount_package \
+            set package_id [dotlrn::mount_package \
                 -package_key [package_key] \
                 -url [package_key] \
-                -directory_p "t"
+                -directory_p "t"]
+
+            # We have to store this package_id!
+            # This is the package_id for the calendar instantiation of dotLRN
+            parameter::set_from_package_key \
+                    -package_key [my_package_key] \
+                    -parameter main_calendar_package_id \
+                    -value $package_id
         }
 
         dotlrn_applet::add_applet_to_dotlrn -applet_key [applet_key]
@@ -77,12 +84,20 @@ namespace eval dotlrn_calendar {
 
     ad_proc -public calendar_create_helper {
         {-community_id:required}
+        {-package_id:required}
     } {
         A helper proc to create a calendar for a comm, returns the new calendar_id
     } {
         # create the community's calendar, the "f" is for a public calendar
         set community_name [dotlrn_community::get_community_name $community_id]
-        return [calendar_create [ad_conn "user_id"] "f" $community_name]
+        # return [calendar_create [ad_conn "user_id"] "f" $community_name]
+
+        # New calendar proc
+        return [calendar::new \
+                -owner_id [ad_conn user_id] \
+                -private_p "f" \
+                -calendar_name $community_name \
+                -package_id $package_id]
     }
 
     ad_proc -public add_applet_to_community {
@@ -90,16 +105,15 @@ namespace eval dotlrn_calendar {
     } {
         Add the calendar applet to a specific dotlrn community
     } {
-        set calendar_id [calendar_create_helper -community_id $community_id]
-        return [add_applet_to_community_helper \
-                    -community_id $community_id \
-                    -calendar_id $calendar_id
-       ]
+        set results [add_applet_to_community_helper \
+                    -community_id $community_id
+        ]
+        
+        return [lindex $results 0]
     }
 
     ad_proc -public add_applet_to_community_helper {
         {-community_id:required}
-        {-calendar_id:required}
     } {
         Add the calendar applet to a specific dotlrn community
 
@@ -118,6 +132,9 @@ namespace eval dotlrn_calendar {
                 -package_key [package_key] \
                 -url [package_key] \
                 -directory_p "t"]
+
+        # Here we create the calendar
+        set calendar_id [calendar_create_helper -community_id $community_id -package_id $package_id]
 
         # Here we have both the calendar ID and the node ID
         # We associate content using portal mapping (ben)
@@ -223,7 +240,14 @@ namespace eval dotlrn_calendar {
         set calendar_id [calendar_have_private_p -return_id 1 $user_id]
         
         if {$calendar_id == 0} {
-            set calendar_id [calendar_create $user_id "t" "Personal"]
+            # HERE we need to find the package ID for the calendar instance at the top level
+            # How we do this is a tad tricky
+            # set calendar_id [calendar_create $user_id "t" "Personal"]
+            set calendar_id [calendar::new \
+                    -owner_id $user_id \
+                    -private_p "t" \
+                    -calendar_name "Personal" \
+                    -package_id [parameter::get_from_package_key -package_key [my_package_key] -parameter main_calendar_package_id]]
 
             # Here we map the calendar to the main dotlrn package
             set node_id [site_nodes::get_node_id_from_child_name \
@@ -367,14 +391,13 @@ namespace eval dotlrn_calendar {
             -community_id $old_community_id
         ]
         
-        set calendar_id [calendar_create_helper -community_id $new_community_id]
+        set results [add_applet_to_community_helper \
+                    -community_id $new_community_id
+        ]
+
+        set calendar_id [lindex $results 1]
 
         db_dml copy_cal_item_types {}
-
-        return [add_applet_to_community_helper \
-                    -community_id $new_community_id \
-                    -calendar_id $calendar_id
-       ]
     }
 
     #
