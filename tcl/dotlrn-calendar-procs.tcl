@@ -160,6 +160,15 @@ namespace eval dotlrn_calendar {
                 -url [package_key] \
                 -directory_p "t"]
 
+        # Here we have both the calendar ID and the node ID
+        # We associate content using portal mapping (ben)
+        # This SHOULD NOT work, but it does cause we're 
+        # reinstantiating calendar
+        portal::mapping::new \
+                -node_id \
+                [site_nodes::get_node_id_from_child -parent_node_id $node_id -name [package_key]] \
+                -object_id $group_calendar_id
+
         # Becase the context_id of calendar dosen't point to the community
         # the calendar_admin perm is not automatically inherited (like
         # in bboard for example) We must do an explicit grant to the
@@ -210,6 +219,13 @@ namespace eval dotlrn_calendar {
             # create a private, global calendar for this user
             set cal_name "$user_name's Personal Calendar"
             set calendar_id [calendar_create $user_id "t" $cal_name]
+
+            # Here we map the calendar to the main dotlrn package
+            portal::mapping::new \
+                    -node_id \
+                    [site_nodes::get_node_id_from_child -parent_node_id [dotlrn::get_node_id] -name [package_key]] \
+                    -object_id $calendar_id
+            
         }
 
         # add this PE to the user's workspace!
