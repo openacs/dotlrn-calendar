@@ -162,12 +162,12 @@ namespace eval dotlrn_calendar {
 
 	# Now for the user workspace
 	# set this calendar_id in the workspace portal
-        set wsp_id [dotlrn::get_workspace_portal_id $user_id]
+        set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
         
         # get the comm's calendar_id, and add it as a param to the
         # ws portal's calendar portal element
         if { $workspace_portal_id != "" } {
-            calendar_portlet::add_self_to_page $wsp_id $g_cal_id
+            calendar_portlet::add_self_to_page $workspace_portal_id $g_cal_id
         }
     }
 
