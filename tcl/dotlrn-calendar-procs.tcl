@@ -59,10 +59,9 @@ namespace eval dotlrn_calendar {
     ad_proc -public get_user_default_page {} {
         return the user default page to add the portlet to
     } {
-        return [ad_parameter \
-                -package_id [apm_package_id_from_key dotlrn-calendar] \
-                user_default_page
-        ]
+        # there shouldn't need to be a default here, but this 
+        # call is not working for some reason
+        return [ad_parameter "user_default_page" dotlrn-calendar "Calendar"]
     }
 
     ad_proc -public add_applet {
@@ -99,13 +98,15 @@ namespace eval dotlrn_calendar {
     } {
         # add this element to the community portal
         # do this directly, don't use calendar_portlet::add_self_to_page here
+
+        # aks: why direct??
         set portal_id [dotlrn_community::get_portal_id -community_id $community_id]
-        calendar_portlet::make_self_available $portal_id
+
         set element_id [portal::add_element \
                 -pretty_name [get_pretty_name] \
                 -force_region 2 \
-                $portal_id \
-                [calendar_portlet::my_name]
+                -portal_id $portal_id \
+                -portlet_name [calendar_portlet::get_my_name]
         ]
 
         # add the "full calendar" portlet to the commnuity's "calendar" page,
@@ -145,11 +146,10 @@ namespace eval dotlrn_calendar {
         # Add the admin portlet, too
         set admin_portal_id [dotlrn_community::get_admin_portal_id -community_id $community_id]
 
-        calendar_admin_portlet::make_self_available $admin_portal_id
-
-        set element_id \
-                [portal::add_element $admin_portal_id \
-                [calendar_admin_portlet::my_name]]
+        set element_id [portal::add_element \
+                -portal_id $admin_portal_id \
+                -portlet_name [calendar_admin_portlet::get_my_name]
+        ]
 
         # set the group_calendar_id parameter in the admin portal.
         portal::set_element_param \
@@ -240,34 +240,27 @@ namespace eval dotlrn_calendar {
         set admin_portal_id \
                 [dotlrn_community::get_admin_portal_id -community_id $community_id]
         
-        calendar_admin_portlet::make_self_unavailable $admin_portal_id
-
         set admin_element_id [portal::get_element_ids_by_ds \
                 $admin_portal_id \
-                [calendar_admin_portlet::my_name]
+                [calendar_admin_portlet::get_my_name]
         ] 
 
         portal::remove_element $admin_element_id 
-
 
         # now for the "regular" calendar portlet from the comm's portal
         set portal_id [dotlrn_community::get_portal_id \
                 -community_id $community_id
         ]
 
-        calendar_portlet::make_self_unavailable $portal_id
-
         portal::remove_element [portal::get_element_ids_by_ds \
                 $portal_id \
-                [calendar_portlet::my_name]
+                [calendar_portlet::get_my_name]
         ]
 
         # now for the "full calendar" portlet from the comm's portal
-        calendar_full_portlet::make_self_unavailable $portal_id
-
         portal::remove_element [portal::get_element_ids_by_ds \
                 $portal_id \
-                [calendar_full_portlet::my_name]
+                [calendar_full_portlet::get_my_name]
         ]
         
         # and finally kill the group calendar
@@ -311,9 +304,7 @@ namespace eval dotlrn_calendar {
         }
 
         set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
-        calendar_portlet::make_self_available $workspace_portal_id
-        calendar_full_portlet::make_self_available $workspace_portal_id
-
+      
         # add the "day summary" pe to the user's first workspace page
         set element_id [calendar_portlet::add_self_to_page \
                 $workspace_portal_id \
@@ -343,10 +334,8 @@ namespace eval dotlrn_calendar {
         set calendar_id [calendar_have_private_p -return_id 1 $user_id]
 
         calendar_portlet::remove_self_from_page $workspace_portal_id $calendar_id
-        calendar_portlet::make_self_unavailable $workspace_portal_id
 
         calendar_full_portlet::remove_self_from_page $workspace_portal_id $calendar_id
-        calendar_full_portlet::make_self_unavailable $workspace_portal_id
     }
 
     ad_proc -public add_user_to_community {
@@ -391,7 +380,7 @@ namespace eval dotlrn_calendar {
         # get the calendar element for this community
         set element_id [portal::get_element_ids_by_ds \
                 $portal_id \
-                [calendar_portlet::my_name]
+                [calendar_portlet::get_my_name]
         ]
 
         return [portal::get_element_param $element_id "calendar_id"]
