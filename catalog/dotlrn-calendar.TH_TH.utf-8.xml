@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<message_catalog package_key="dotlrn-calendar" package_version="0.1a" locale="TH_TH" charset="utf-8">
-
-  <msg key="Day_Summary">รายการประจำวัน</msg>
-</message_catalog>
