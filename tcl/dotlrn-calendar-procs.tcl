@@ -73,9 +73,9 @@ namespace eval dotlrn_calendar {
         # Use the package_key for the -url param - "/" are not allowed!
         if {![dotlrn::is_package_mounted -package_key [package_key]]} {
             dotlrn::mount_package \
-                    -package_key [package_key] \
-                    -url [package_key] \
-                    -directory_p "t"
+                -package_key [package_key] \
+                -url [package_key] \
+                -directory_p "t"
         }
 
         # register/activate self with dotlrn
@@ -111,17 +111,13 @@ namespace eval dotlrn_calendar {
 
         # add the "full calendar" portlet to the commnuity's "calendar" page,
         # similar to the same thing on a user's wsp. use the get_user_def_page
-        set page_id [portal::get_page_id \
-                -portal_id $portal_id \
-                -page_name [get_user_default_page] \
-        ]
-
+        set page_name [get_user_default_page]
         if {[dotlrn_community::dummy_comm_p -community_id $community_id]} {
             # since this is a dummy comm, set a fake g_cal_id
             set element_id [calendar_full_portlet::add_self_to_page \
-                    -page_id $page_id  \
-                    $portal_id \
-                    0
+                -portal_id $portal_id \
+                -page_name $page_name \
+                -calendar_id 0
             ]
             return
         }
@@ -142,9 +138,9 @@ namespace eval dotlrn_calendar {
                 $element_id "scoped_p" "f"
 
         set element_id [calendar_full_portlet::add_self_to_page \
-                -page_id $page_id  \
-                $portal_id \
-                $group_calendar_id
+                -portal_id $portal_id \
+                -page_name $page_name  \
+                -calendar_id $group_calendar_id
         ]
 
         # Add the admin portlet, too
@@ -241,30 +237,27 @@ namespace eval dotlrn_calendar {
 
         # remove the portlets, params will cascade
         # first the admin portlet, from the comm's admin portal
-        set admin_portal_id [dotlrn_community::get_admin_portal_id \
-                -community_id $community_id]
+        set admin_portal_id [dotlrn_community::get_admin_portal_id -community_id $community_id]
 
         portal::remove_element \
-                -portal_id $admin_portal_id \
-                -portlet_name [calendar_admin_portlet::get_my_name]
+            -portal_id $admin_portal_id \
+            -portlet_name [calendar_admin_portlet::get_my_name]
 
         # now for the "regular" calendar portlet from the comm's portal
-        set portal_id [dotlrn_community::get_portal_id \
-                -community_id $community_id
-        ]
+        set portal_id [dotlrn_community::get_portal_id -community_id $community_id]
 
         # now for the "full calendar" portlet from the comm's portal
         portal::remove_element \
-                -portal_id $portal_id \
-                -portlet_name [calendar_full_portlet::get_my_name]
+            -portal_id $portal_id \
+            -portlet_name [calendar_full_portlet::get_my_name]
         
         # and finally kill the group calendar
         calendar_delete -calendar_id $group_calendar_id
 
         # delete the package instance and the site node where it's mounted
         dotlrn::unmount_community_applet_package \
-                -community_id $community_id \
-                -package_key [package_key]
+            -community_id $community_id \
+            -package_key [package_key]
     }
 
     ad_proc -public add_user {
@@ -302,20 +295,15 @@ namespace eval dotlrn_calendar {
       
         # add the "day summary" pe to the user's first workspace page
         set element_id [calendar_portlet::add_self_to_page \
-                $workspace_portal_id \
-                $calendar_id
+            -portal_id $workspace_portal_id \
+            -calendar_id $calendar_id \
         ]
 
         # but add the "full calendar" pe to the workspace page specified above
-        set page_id [portal::get_page_id \
-                -portal_id $workspace_portal_id \
-                -page_name [get_user_default_page]
-        ]
-
         set element_id [calendar_full_portlet::add_self_to_page \
-                -page_id $page_id  \
-                $workspace_portal_id \
-                $calendar_id
+            -portal_id $workspace_portal_id \
+            -page_name [get_user_default_page] \
+            -calendar_id $calendar_id
         ]
 
         # Make sure this is scoped
@@ -345,8 +333,13 @@ namespace eval dotlrn_calendar {
         set g_cal_id [get_group_calendar_id -community_id $community_id]
         set workspace_portal_id [dotlrn::get_workspace_portal_id $user_id]
 
-        calendar_portlet::add_self_to_page $workspace_portal_id $g_cal_id
-        calendar_full_portlet::add_self_to_page $workspace_portal_id $g_cal_id
+        calendar_portlet::add_self_to_page \
+            -portal_id $workspace_portal_id \
+            -calendar_id $g_cal_id
+
+        calendar_full_portlet::add_self_to_page \
+            -portal_id $workspace_portal_id \
+            -calendar_id $g_cal_id
     }
 
     ad_proc -public remove_user_from_community {
