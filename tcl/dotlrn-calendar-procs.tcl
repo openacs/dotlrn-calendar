@@ -90,6 +90,16 @@ namespace eval dotlrn_calendar {
 		[portal::add_element $portal_template_id \
 		[calendar_portlet::my_name]]
 
+        # Add the admin portlet, too
+	set admin_portal_id \
+		[dotlrn_community::get_community_admin_portal_id $community_id]
+	
+	calendar_admin_portlet::make_self_available $admin_portal_id
+
+	set element_id \
+		[portal::add_element $admin_portal_id \
+		[calendar_admin_portlet::my_name]]
+
 	# set the group_calendar_id parameter in the portal template,
 	portal::set_element_param \
 		$element_id "group_calendar_id" $group_calendar_id
