@@ -95,7 +95,7 @@ namespace eval dotlrn_calendar {
 	set community_name "Your Calendar for "
 	append community_name [db_exec_plsql get_community_name "
 	begin
-	:1 := dotlrn_community.name(:node_id);
+	:1 := dotlrn_community.name(:community_id);
 	end;"]
 
 	set calendar_id [calendar_create $user_id "t" $community_name]
