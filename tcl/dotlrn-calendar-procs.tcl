@@ -95,8 +95,10 @@ namespace eval dotlrn_calendar {
 	calendar_portlet::make_self_available $portal_template_id
 
 	set element_id \
-		[portal::add_element $portal_template_id \
-		[calendar_portlet::my_name]]
+                [portal::add_element \
+                		-pretty_name [get_pretty_name] \
+                                $portal_template_id \
+                                [calendar_portlet::my_name]]
 
 	# set the group_calendar_id parameter in the portal template,
 	portal::set_element_param \
