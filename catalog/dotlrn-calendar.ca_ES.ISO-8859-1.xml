@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<message_catalog package_key="dotlrn-calendar" package_version="2.1.0b1" locale="ca_ES" charset="ISO-8859-1">
+
+  <msg key="Day_Summary">Resum diari</msg>
+</message_catalog>
