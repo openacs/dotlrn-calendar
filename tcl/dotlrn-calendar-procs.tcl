@@ -24,6 +24,10 @@ namespace eval dotlrn_calendar {
 	return "calendar"
     }
 
+    ad_proc -public applet_key {
+        return "dotlrn_calendar"
+    }
+
     ad_proc -public get_url {
     } {
 	get the package_key this applet deals with
@@ -68,7 +72,7 @@ namespace eval dotlrn_calendar {
         # register/activate self with dotlrn
         # our service contract is in the db, but we must tell dotlrn
         # that we exist and want to be active
-        dotlrn_community::add_applet_to_dotlrn -applet_key "dotlrn_calendar"
+        dotlrn_community::add_applet_to_dotlrn -applet_key [applet_key]
     }
 
     ad_proc -public add_applet_to_community {
