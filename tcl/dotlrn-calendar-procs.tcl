@@ -39,12 +39,58 @@ namespace eval dotlrn_calendar {
     }
 
     ad_proc -public add_applet {
-	community_id
     } {
-	Called for one time init
+	Called for one time init - must be repeatable!
     } {
-	# mount self under /dotlrn
-	
+
+	# XXX testing - abstract out
+	# only one instance of calendar for dotlrn, unlike other applets. 
+	#
+	# this is ugly, but the site_node proc throws errors on misses!
+
+	set result ""
+	if {[catch {nsv_get site_nodes [apm_package_url_from_key "dotlrn"]} \
+		result] == 0} {
+	    ns_log notice "aks90: site_nodes array hit!"
+	} else {
+	    ns_log notice "aks90: site_node array miss: $result\n
+	    [apm_package_url_from_key "dotlrn"] \n
+	    nsv info: [nsv_array get site_nodes]"
+	}
+    
+	if {$result != 0} {
+	    ns_log warning "aks92: dotlrn_calendar::add_applet creating...!"
+#
+#	     db_transaction {
+#		 # calling directly since below proc has issues
+#		 # set node_id [site_node_create $dotlrn_node_id  "calendar"]
+#		 set new_node_id [db_nextval acs_object_id_seq]
+#		 set dotlrn_node_id [dotlrn::get_node_id]
+#		 set name "dotlrn-calendar"
+#
+#		 set node_id [db_exec_plsql create_cal_node {
+#		     begin
+#
+#		     :1 := site_node.new (
+#		     node_id => :new_node_id,
+#		     parent_id => :dotlrn_node_id,
+#		     name => :name,
+#		     directory_p => 'f');
+#		     end;
+#		 }]
+#		 
+#		 # instanciate calendar there
+#		 site_node_create_package_instance $node_id \
+#			 [get_pretty_name] \
+#			 [dotlrn::get_package_id] \
+#			 [package_key]
+#
+#	     }
+	} else {
+	    ns_log warning "aks92: dotlrn_calendar::add_applet already here!"
+	}
+
+	return 1
     }
 
     ad_proc -public add_applet_to_community {
@@ -52,6 +98,8 @@ namespace eval dotlrn_calendar {
     } {
 	Add the calendar applet to a specific dotlrn community
     } {
+
+	ns_log notice "aks91: dotlrn_calendar add_applet_to_community called"
 
 	# aks XXX fixme
 
@@ -105,6 +153,9 @@ namespace eval dotlrn_calendar {
     } {
 	Called once when a user is added as a dotlrn user
     } {
+
+	ns_log notice "aks91: dotlrn_calendar add_applet called"
+
 	# create a private calendar for this user
 
 	#	set community_name \
