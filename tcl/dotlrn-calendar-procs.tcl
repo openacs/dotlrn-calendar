@@ -170,7 +170,9 @@ namespace eval dotlrn_calendar {
 	# Add the portlet here
         if { $workspace_portal_id != "" } {
             calendar_portlet::make_self_available $workspace_portal_id
+
             set element_id  [calendar_portlet::add_self_to_page \
+                    -page_id [portal::get_page_id -portal_id $portal_id -page_name [get_user_default_page]] \
                     $workspace_portal_id \
                     $calendar_id]
         }
@@ -198,7 +200,6 @@ namespace eval dotlrn_calendar {
 
 	# Call the portal element to be added correctly
 	calendar_portlet::add_self_to_page \
-                -page_id [portal::get_page_id -portal_id $portal_id -page_name [get_user_default_page]] \
                 $portal_id $g_cal_id
 
 	# Now for the user workspace
