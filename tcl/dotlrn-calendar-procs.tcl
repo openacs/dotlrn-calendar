@@ -140,7 +140,7 @@ namespace eval dotlrn_calendar {
         # We associate content using portal mapping (ben)
         # This SHOULD NOT work, but it does cause we're 
         # reinstantiating calendar
-        portal::mapping::new \
+        site_node_object_map::new \
                 -node_id \
                 [site_nodes::get_node_id_from_child_name \
                     -parent_node_id $node_id \
@@ -255,7 +255,7 @@ namespace eval dotlrn_calendar {
                     -name [package_key]
             ]
             
-            portal::mapping::new -node_id $node_id -object_id $calendar_id
+            site_node_object_map::new -node_id $node_id -object_id $calendar_id
         }
 
         set args [ns_set create]
