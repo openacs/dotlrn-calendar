@@ -207,15 +207,10 @@ namespace eval dotlrn_calendar {
 
     ad_proc -public remove_applet_from_community {
         community_id
-        comm_package_id
     } {
         remove the applet from the community
     } {        
         set group_calendar_id [get_group_calendar_id -community_id $community_id]
-        
-        # aks debug 
-        ad_return_complaint 1 "aks2: [site_nodes::get_node_id_from_child_name -parent_node_id [site_nodes::get_node_id_from_package_id -package_id $comm_package_id] -name [package_key] ]"
-
 
         # first, revoke the permissions
         set members_segment_id [dotlrn_community::get_rel_segment_id \
@@ -262,7 +257,7 @@ namespace eval dotlrn_calendar {
 
         calendar_portlet::make_self_unavailable $portal_id
 
-        portal::remove_element [portal::get_element_id_by_ds \
+        portal::remove_element [portal::get_element_ids_by_ds \
                 $portal_id \
                 [calendar_portlet::my_name]
         ]
@@ -270,21 +265,18 @@ namespace eval dotlrn_calendar {
         # now for the "full calendar" portlet from the comm's portal
         calendar_full_portlet::make_self_unavailable $portal_id
 
-        portal::remove_element [portal::get_element_id_by_ds \
+        portal::remove_element [portal::get_element_ids_by_ds \
                 $portal_id \
                 [calendar_full_portlet::my_name]
         ]
         
         # and finally kill the group calendar
-        calendar_delete $group_calendar_id
+        calendar_delete -calendar_id $group_calendar_id
 
         # delete the package instance and the site node where it's mounted
-
-        # XXX it appears that the only way to get the package id
-        # of the calendar package mounted at this point, is through
-        # the comm_id/comm_package_id and the url, this should be better!
-        dotlrn::unmount_package -package_id $package_id
-                
+        dotlrn::unmount_community_applet_package \
+                -community_id $community_id \
+                -package_key [package_key]
     }
 
     ad_proc -public add_user {
