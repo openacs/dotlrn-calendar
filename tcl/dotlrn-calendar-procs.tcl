@@ -458,7 +458,7 @@ ad_proc -private dotlrn_calendar::handle_rename {
 } {
     what to do in calendar when a dotlrn community is renamed
 } {
-    calendar::rename -calendar_id [get_group_calendar_id -community_id $community_id] -name $new_value
+    calendar::rename -calendar_id [get_group_calendar_id -community_id $community_id] -calendar_name $new_value
 }
 
 #
