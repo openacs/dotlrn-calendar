@@ -41,15 +41,29 @@ namespace eval dotlrn_calendar {
     ad_proc -public add_applet {
 	community_id
     } {
-	Add the calendar applet
+	Called for one time init
     } {
+	# mount self under /dotlrn
+	
+    }
+
+    ad_proc -public add_applet_to_community {
+	community_id
+    } {
+	Add the calendar applet to a specific dotlrn community
+    } {
+
+	# aks XXX fixme
+
 	# create the calendar package instance (all in one, I've mounted it)
-	set package_key [package_key]
-	set package_id [dotlrn::instantiate_and_mount $community_id $package_key]
+	# set package_key [package_key]
+
+	# XXX aks - don't mount here
+	# set package_id [dotlrn::instantiate_and_mount $community_id $package_key]
 
 	# first get the community name from dotlrn
-	set community_name "The [dotlrn_community::get_community_name $community_id] Calendar"
-	
+	set community_name "The [dotlrn_community::get_community_name $community_id] Public Calendar"
+
 	# create a community calendar, the "f" is for a public calendar
 	set group_calendar_id \
 		[calendar_create [ad_conn "user_id"] "f" $community_name]
@@ -89,26 +103,52 @@ namespace eval dotlrn_calendar {
 	community_id
 	user_id
     } {
+	Called once when a user is added as a dotlrn user
+    } {
+	# create a private calendar for this user
+
+	#	set community_name \
+	#	"Your Calendar for [dotlrn_community::get_community_name $community_id]"
+
+	# 	set calendar_id [calendar_create $user_id "t" $community_name]
+
+	# add this PE to the user's workspace!
+	set workspace_page_id [dotlrn_community::get_workspace_page_id $user_id]
+	# Add the portlet here
+	calendar_portlet::add_self_to_page $workspace_page_id $calendar_id
+
+
+    }
+
+    ad_proc -public add_user_to_community {
+	community_id
+	user_id
+    } {
 	Add a user to a community
     } {
-	set page_id [dotlrn_community::get_page_id $community_id $user_id]
-	set package_id [dotlrn_community::get_applet_package_id \
-		$community_id dotlrn_calendar]
 
 	# create a private calendar for the user
 	set community_name \
 		"Your Calendar for [dotlrn_community::get_community_name $community_id]"
+
+	# aks XXX
+	# add the portlet, to this user's community portal
+	set page_id [dotlrn_community::get_page_id $community_id $user_id]
+
+	# Add the calendar DS to the user's community portal. 
+	# This will copy the params from the portal template if exists
+	calendar_portlet::make_self_available $page_id
+	calendar_portlet::add_self_to_page $page_id $calendar_id 	
 
 	# temporary hack by ben to make calendar unique (FIXME)
 	set calendar_id [calendar_create $user_id "t" "$community_name-$user_id"]
 
 	# XXX - aks - public calendar params here?
 
-	# Add the calendar DS to the user's portal. 
-	calendar_portlet::make_self_available $page_id
+	# XXX we need to make sure that the group_portal_id 
+	# for this community gets passed to the user's workspace
+	# portal correctly XXX
 
-	# This will copy the params from the portal template if exists
-	calendar_portlet::add_self_to_page $page_id $calendar_id 
     }
 
     ad_proc -public remove_user {
