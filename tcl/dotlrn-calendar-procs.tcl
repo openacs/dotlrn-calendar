@@ -272,7 +272,7 @@ ad_proc -public dotlrn_calendar::add_user {
     user if they don't have one, and add both calendar portlets
     to the user's portal
 } {
-    set calendar_id [calendar::have_private_p -return_id 1 $user_id]
+    set calendar_id [calendar::have_private_p -return_id 1 -party_id $user_id]
     
     if {$calendar_id == 0} {
 	# HERE we need to find the package ID for the calendar instance at the top level
