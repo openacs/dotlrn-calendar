@@ -56,7 +56,7 @@ namespace eval dotlrn_calendar {
             dotlrn::mount_package \
                     -package_key [package_key] \
                     -url [package_key] \
-                    -directory_p "f"
+                    -directory_p "t"
 	}
     }
 
