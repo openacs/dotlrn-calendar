@@ -143,6 +143,10 @@ namespace eval dotlrn_calendar {
                 -calendar_id $group_calendar_id
         ]
 
+        # This is not scoped, because we are only seeing one group calendar
+        portal::set_element_param \
+                $element_id "scoped_p" "f"
+
         # Add the admin portlet, too
         set admin_portal_id [dotlrn_community::get_admin_portal_id -community_id $community_id]
 
@@ -301,6 +305,9 @@ namespace eval dotlrn_calendar {
             -portal_id $workspace_portal_id \
             -calendar_id $calendar_id \
         ]
+
+        # Make sure this is scoped
+        portal::set_element_param $element_id scoped_p t
 
         # but add the "full calendar" pe to the workspace page specified above
         set element_id [calendar_full_portlet::add_self_to_page \
