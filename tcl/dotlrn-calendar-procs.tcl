@@ -96,13 +96,6 @@ namespace eval dotlrn_calendar {
     } {
         Add the calendar applet to a specific dotlrn community
     } {
-        # set up a nice name for the comm's calendar
-        set cal_name  "[dotlrn_community::get_community_name $community_id] Public Calendar"
-
-        # create the community's calendar, the "f" is for a public calendar
-        set group_calendar_id \
-                [calendar_create [ad_conn "user_id"] "f" $cal_name]
-
         # add this element to the portal template.
         # do this directly, don't use calendar_portlet::add_self_to_page here
         set portal_template_id \
@@ -117,9 +110,6 @@ namespace eval dotlrn_calendar {
                                 $portal_template_id \
                                 [calendar_portlet::my_name]]
 
-        # set the group_calendar_id parameter in the portal template,
-        portal::set_element_param \
-                $element_id "calendar_id" $group_calendar_id
 
         # add the "full calendar" portlet to the commnuity's "calendar" page,
         # similar to the same thing on a user's wsp. use the get_user_def_page
@@ -128,6 +118,29 @@ namespace eval dotlrn_calendar {
                          -portal_id $portal_template_id \
                          -page_name [get_user_default_page] \
         ]
+
+
+        if {[dotlrn_community::dummy_comm_p -community_id $community_id]} {
+            # since this is a dummy comm, set a fake g_cal_id
+            set element_id [calendar_full_portlet::add_self_to_page \
+                    -page_id $page_id  \
+                    $portal_template_id \
+                    0
+            ]
+
+            return
+        }
+        
+        # set up a nice name for the comm's calendar
+        set cal_name  "[dotlrn_community::get_community_name $community_id] Public Calendar"
+
+        # create the community's calendar, the "f" is for a public calendar
+        set group_calendar_id \
+                [calendar_create [ad_conn "user_id"] "f" $cal_name]
+
+        # set the group_calendar_id parameter in the portal template,
+        portal::set_element_param \
+                $element_id "calendar_id" $group_calendar_id
 
         set element_id [calendar_full_portlet::add_self_to_page \
                            -page_id $page_id  \
