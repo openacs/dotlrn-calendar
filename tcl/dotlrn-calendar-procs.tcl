@@ -313,7 +313,7 @@ ad_proc -public dotlrn_calendar::remove_user {
     @creation-date 2004-08-12
 } {
     # reverse the things done by add_user
-    set calendar_id [calendar_have_private_p -return_id 1 $user_id]
+    set calendar_id [calendar::have_private_p -return_id 1 -party_id $user_id]
     
     if {$calendar_id} {
         calendar::get -calendar_id $calendar_id -array calendar_info
