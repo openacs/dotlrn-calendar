@@ -67,9 +67,9 @@ ad_proc -public dotlrn_calendar::add_applet {
 	# We have to store this package_id!
 	# This is the package_id for the calendar instantiation of dotLRN
 	parameter::set_from_package_key \
-		-package_key [my_package_key] \
-		-parameter main_calendar_package_id \
-		-value $package_id
+	        -package_key [my_package_key] \
+	        -parameter main_calendar_package_id \
+	        -value $package_id
     }
 
     dotlrn_applet::add_applet_to_dotlrn -applet_key [applet_key] -package_key [my_package_key]
