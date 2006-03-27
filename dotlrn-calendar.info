@@ -13,7 +13,7 @@
         <vendor url="http://openacs.org">OpenACS</vendor>
 
         <provides url="dotlrn-calendar" version="2.2.0a1"/>
-        <requires url="calendar-portlet" version="0.1a"/>
+        <requires url="calendar-portlet" version="2.2.0a1"/>
         <requires url="dotlrn" version="1.0"/>
         <requires url="dotlrn-fs" version="0.1a"/>
 
