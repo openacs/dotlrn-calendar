@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<message_catalog package_key="dotlrn-calendar" package_version="2.1.0b1" locale="zh_TW" charset="utf-8">
+<message_catalog package_key="dotlrn-calendar" package_version="2.2.0b2" locale="zh_TW" charset="utf-8">
 
   <msg key="Day_Summary">日摘要</msg>
 </message_catalog>
