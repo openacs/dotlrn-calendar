@@ -48,7 +48,7 @@ ad_proc -public dotlrn_calendar::applet_key {
 ad_proc -public dotlrn_calendar::get_pretty_name {
 } {
 } {
-    return "Calendar"
+    return "#calendar-portlet.pretty_name#"
 }
 
 ad_proc -public dotlrn_calendar::add_applet {
