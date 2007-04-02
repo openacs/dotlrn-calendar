@@ -13,9 +13,9 @@
         <vendor url="http://openacs.org">OpenACS</vendor>
 
         <provides url="dotlrn-calendar" version="2.3.0a1"/>
-        <requires url="calendar-portlet" version="5.3.0a1"/>
-        <requires url="dotlrn" version="5.3.0a1"/>
-        <requires url="dotlrn-fs" version="5.3.0a1"/>
+        <requires url="calendar-portlet" version="2.3.0a1"/>
+        <requires url="dotlrn" version="2.3.0a1"/>
+        <requires url="dotlrn-fs" version="2.3.0a1"/>
 
         <parameters>
             <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="main_calendar_package_id"  description="The package_id of calendar mounted right under dotLRN"/>
