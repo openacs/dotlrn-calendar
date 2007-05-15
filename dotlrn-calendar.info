@@ -7,15 +7,15 @@
     <initial-install-p>f</initial-install-p>
     <singleton-p>t</singleton-p>
 
-    <version name="2.2.1a1" url="http://openacs.org/repository/download/apm/dotlrn-calendar-2.2.1a1.apm">
+    <version name="2.3.0" url="http://openacs.org/repository/download/apm/dotlrn-calendar-2.3.0.apm">
         <owner url="http://openacs.org">OpenACS</owner>
-        <release-date>2006-12-02</release-date>
+        <release-date>2007-04-22</release-date>
         <vendor url="http://openacs.org">OpenACS</vendor>
 
-        <provides url="dotlrn-calendar" version="2.2.1a1"/>
-        <requires url="calendar-portlet" version="2.2.1a1"/>
-        <requires url="dotlrn" version="2.2.1a1"/>
-        <requires url="dotlrn-fs" version="2.2.1a1"/>
+        <provides url="dotlrn-calendar" version="2.3.0"/>
+        <requires url="calendar-portlet" version="2.3.0"/>
+        <requires url="dotlrn" version="2.3.0"/>
+        <requires url="dotlrn-fs" version="2.3.0"/>
 
         <parameters>
             <parameter datatype="string"  min_n_values="1"  max_n_values="1"  name="main_calendar_package_id"  description="The package_id of calendar mounted right under dotLRN"/>
