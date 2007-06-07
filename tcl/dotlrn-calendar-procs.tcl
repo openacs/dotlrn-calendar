@@ -178,11 +178,11 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
     # We associate content using portal mapping (ben)
     # This SHOULD NOT work, but it does cause we're 
     # reinstantiating calendar
+    set calendar_node_url [site_node::get_children -package_key [package_key] -node_id $node_id]
+    set calendar_node_id [site_node::get_node_id -url $calendar_node_url]
+
     site_node_object_map::new \
-	    -node_id \
-	    [site_nodes::get_node_id_from_child_name \
-	    -parent_node_id $node_id \
-	    -name [package_key]] \
+	    -node_id $calendar_node_id \
 	    -object_id $calendar_id
 
     # Explicitly grant admin to community admins and read to community members.
@@ -285,11 +285,9 @@ ad_proc -public dotlrn_calendar::add_user {
 		-package_id [parameter::get_from_package_key -package_key [my_package_key] -parameter main_calendar_package_id]]
 
 	# Here we map the calendar to the main dotlrn package
-	set node_id [site_nodes::get_node_id_from_child_name \
-		-parent_node_id [dotlrn::get_node_id] \
-		-name [package_key]
-	]
-	
+    set node_url [site_node::get_children -package_key [package_key] -node_id [dotlrn::get_node_id]]
+    set node_id [site_node::get_node_id $node_url]
+
 	site_node_object_map::new -node_id $node_id -object_id $calendar_id
     }
 
