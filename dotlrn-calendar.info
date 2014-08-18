@@ -11,6 +11,7 @@
         <owner url="http://openacs.org">OpenACS</owner>
         <release-date>2011-10-30</release-date>
         <vendor url="http://dotlrn.org">DotLRN Consortium</vendor>
+        <maturity>2</maturity>
 
         <provides url="dotlrn-calendar" version="2.8.1a1"/>
         <requires url="calendar-portlet" version="2.6.0"/>
