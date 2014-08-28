@@ -9,6 +9,7 @@
 
     <version name="2.8.1a1" url="http://openacs.org/repository/download/apm/dotlrn-calendar-2.8.1a1.apm">
         <owner url="http://openacs.org">OpenACS</owner>
+        <summary>DotLRN Integration (Applet) for Calendar</summary>
         <release-date>2011-10-30</release-date>
         <vendor url="http://dotlrn.org">DotLRN Consortium</vendor>
         <maturity>2</maturity>
