@@ -19,7 +19,7 @@ ad_library {
     the dotlrn applet for calendar
 
     @author ben@openforce.net,arjun@openforce.net
-    @version $Id$
+    @cvs-id $Id$
 }
 
 namespace eval dotlrn_calendar {}
