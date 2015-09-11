@@ -521,3 +521,9 @@ ad_proc -private dotlrn_calendar::get_default_page { portal_type } {
 
     return $page_name
 }
+
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 4
+#    indent-tabs-mode: nil
+# End:
