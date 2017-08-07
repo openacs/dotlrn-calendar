@@ -79,7 +79,7 @@ ad_proc -public dotlrn_calendar::remove_applet {
 } {
     One-time destroy for when the entire applet is removed from dotlrn. 
 } {
-    ad_return_complaint 1 "[applet_key] remove_applet not implimented!"
+    ad_return_complaint 1 "[applet_key] remove_applet not implemented!"
 }
 
 ad_proc -public dotlrn_calendar::calendar_create_helper {
@@ -261,7 +261,7 @@ ad_proc -public dotlrn_calendar::remove_applet_from_community {
 } {
     remove the applet from the community
 } {        
-    ad_return_complaint 1 "[applet_key] remove_applet_from_community not implimented!"
+    ad_return_complaint 1 "[applet_key] remove_applet_from_community not implemented!"
 }
 
 ad_proc -public dotlrn_calendar::add_user {
@@ -521,3 +521,9 @@ ad_proc -private dotlrn_calendar::get_default_page { portal_type } {
 
     return $page_name
 }
+
+# Local variables:
+#    mode: tcl
+#    tcl-indent-level: 4
+#    indent-tabs-mode: nil
+# End:
