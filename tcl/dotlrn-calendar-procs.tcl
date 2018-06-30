@@ -117,7 +117,7 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
 } {
     Add the calendar applet to a specific dotlrn community
 
-    @params community_id 
+    @param community_id
 } {
     #
     # ** setup stuff **
