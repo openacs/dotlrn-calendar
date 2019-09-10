@@ -22,7 +22,7 @@ aa_register_case \
         @creation-date 2019-09-05
 } {
     aa_equals "Package key" "[dotlrn_calendar::package_key]" "calendar"
-    aa_equals "My Package key" "[dotlrn_calendar::my_package_key]" "dotlrn_calendar"
+    aa_equals "My Package key" "[dotlrn_calendar::my_package_key]" "dotlrn-calendar"
     aa_equals "Applet key" "[dotlrn_calendar::applet_key]" "dotlrn_calendar"
 }
 
