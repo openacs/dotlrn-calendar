@@ -26,6 +26,17 @@ aa_register_case \
     aa_equals "Applet key" "[dotlrn_calendar::applet_key]" "dotlrn_calendar"
 }
 
+aa_register_case -procs {
+        dotlrn_calendar::get_pretty_name
+    } -cats {
+        api
+        production_safe
+    } dotlrn_calendar__names {
+        Test diverse name procs.
+} {
+    aa_equals "Pretty name" "[dotlrn_calendar::get_pretty_name]" "#calendar-portlet.pretty_name#"
+}
+
 # Local variables:
 #    mode: tcl
 #    tcl-indent-level: 4
