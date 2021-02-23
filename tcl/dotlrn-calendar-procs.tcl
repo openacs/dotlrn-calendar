@@ -295,9 +295,10 @@ ad_proc -public dotlrn_calendar::add_user {
     ns_set put $args calendar_id $calendar_id
     ns_set put $args scoped_p "t"
     
-    # don't use the cached version
+    # Avoid a stale cache
+    ::dotlrn::dotlrn_user_cache flush -partition_key $user_id $user_id-portal_id
     dotlrn_calendar::add_portlet_helper \
-            [dotlrn::get_portal_id_not_cached -user_id $user_id] \
+            [dotlrn::get_portal_id -user_id $user_id] \
             $args
 }
 
