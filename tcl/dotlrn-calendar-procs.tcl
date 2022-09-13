@@ -196,9 +196,9 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
         -party_id $members_segment_id \
         -object_id $package_id \
         -privilege "read"
-    # 
+    #
     # ** portlet stuff **
-    # 
+    #
 
     # append the calendar_id to the current portlet
     set calendar_id $calendar_id
@@ -206,11 +206,11 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
 
     #
     # set up the admin portlet
-    # 
+    #
 
     set admin_portal_id [dotlrn_community::get_admin_portal_id \
                              -community_id $community_id]
-    
+
     calendar_admin_portlet::add_self_to_page \
         -portal_id $admin_portal_id \
         -calendar_id $calendar_id
@@ -219,7 +219,7 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
     # set up the Class Schedule Portlet
     #
     # this is an exception to the general "style", but
-    # this portlet is only on communities, so we can't 
+    # this portlet is only on communities, so we can't
     # put this code in add_portlet_helper
 
     set portal_id [dotlrn_community::get_portal_id -community_id $community_id]
@@ -249,7 +249,7 @@ ad_proc -public dotlrn_calendar::remove_applet_from_community {
     community_id
 } {
     Remove the applet from the community.
-} {        
+} {
     ad_return_complaint 1 "[applet_key] remove_applet_from_community not implemented!"
 }
 
@@ -262,7 +262,7 @@ ad_proc -public dotlrn_calendar::add_user {
     to the user's portal
 } {
     set calendar_id [calendar::have_private_p -return_id 1 -party_id $user_id]
-    
+
     if {$calendar_id == 0} {
 	# HERE we need to find the package ID for the calendar instance at the top level
 	# How we do this is a tad tricky
@@ -283,7 +283,7 @@ ad_proc -public dotlrn_calendar::add_user {
     set args [ns_set create]
     ns_set put $args calendar_id $calendar_id
     ns_set put $args scoped_p "t"
-    
+
     # Avoid a stale cache
     ::dotlrn::dotlrn_user_cache flush -partition_key $user_id $user_id-portal_id
     dotlrn_calendar::add_portlet_helper \
@@ -301,11 +301,11 @@ ad_proc -public dotlrn_calendar::remove_user {
 } {
     # reverse the things done by add_user
     set calendar_id [calendar::have_private_p -return_id 1 -party_id $user_id]
-    
+
     if {$calendar_id} {
         calendar::get -calendar_id $calendar_id -array calendar_info
         set dotlrn_calendar_package_id [parameter::get_from_package_key -package_key [my_package_key] -parameter main_calendar_package_id]
-        
+
         # make sure the calendar we got belong to the package in
         # dotlrn or we may end up deleting some other calendar
         if {$calendar_info(package_id) == $dotlrn_calendar_package_id} {
@@ -329,7 +329,7 @@ ad_proc -public dotlrn_calendar::add_user_to_community {
     set args [ns_set create]
     ns_set put $args calendar_id $calendar_id
     ns_set put $args param_action "append"
-    
+
     dotlrn_calendar::add_portlet_helper $portal_id $args
 }
 
@@ -344,7 +344,7 @@ ad_proc -public dotlrn_calendar::remove_user_from_community {
 
     set args [ns_set create]
     ns_set put $args calendar_id $calendar_id
-    
+
     dotlrn_calendar::remove_portlet $portal_id $args
 }
 
@@ -352,11 +352,11 @@ ad_proc -public dotlrn_calendar::add_portlet {
     portal_id
 } {
     Set up default params for templates about to call add_portlet_helper
-    
+
     @param portal_id
 } {
     set type [dotlrn::get_type_from_portal_id -portal_id $portal_id]
-    
+
     set args [ns_set create]
     ns_set put $args calendar_id 0
     ns_set put $args full_portlet_page_name [get_default_page $type]
@@ -372,16 +372,16 @@ ad_proc -public dotlrn_calendar::add_portlet {
             -portal_id $portal_id \
             -calendar_id 0 \
             -scoped_p f
-    }     
+    }
 
     add_portlet_helper $portal_id $args
 }
 
 ad_proc -private dotlrn_calendar::add_portlet_helper {
-    portal_id 
-    args        
+    portal_id
+    args
 } {
-    Does the call to add the portlet to the portal. 
+    Does the call to add the portlet to the portal.
     Params for the portlet are sent to this proc by the caller.
 } {
     calendar_portlet::add_self_to_page \
@@ -403,19 +403,19 @@ ad_proc -public dotlrn_calendar::remove_portlet {
     portal_id
     args
 } {
-    A helper proc to remove the underlying portlet from the given portal. 
+    A helper proc to remove the underlying portlet from the given portal.
     This is a lot simpler than add_portlet.
 
     @param portal_id
-    @param args An ns_set with the calendar_id. 
-} { 
+    @param args An ns_set with the calendar_id.
+} {
     calendar_portlet::remove_self_from_page \
         -portal_id $portal_id \
-        -calendar_id [ns_set get $args "calendar_id"] 
+        -calendar_id [ns_set get $args "calendar_id"]
 
     calendar_full_portlet::remove_self_from_page \
         -portal_id $portal_id \
-        -calendar_id [ns_set get $args "calendar_id"] 
+        -calendar_id [ns_set get $args "calendar_id"]
 }
 
 ad_proc -public dotlrn_calendar::clone {
@@ -429,7 +429,7 @@ ad_proc -public dotlrn_calendar::clone {
     # copy the old_comm's item types table
     set old_calendar_id [get_group_calendar_id \
                              -community_id $old_community_id]
-    
+
     add_applet_to_community_helper \
         -community_id $new_community_id
 
@@ -444,15 +444,15 @@ ad_proc -public dotlrn_calendar::change_event_handler {
     event
     old_value
     new_value
-} { 
+} {
     Listens for the following events: rename
-} { 
+} {
     switch $event {
 	rename {
 	    handle_rename -community_id $community_id -old_value $old_value -new_value $new_value
 	}
     }
-}   
+}
 
 ad_proc -private dotlrn_calendar::handle_rename {
     {-community_id:required}
