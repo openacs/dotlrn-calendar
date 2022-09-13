@@ -16,7 +16,7 @@
 
 ad_library {
 
-    the dotlrn applet for calendar
+    The dotLRN applet for calendar.
 
     @author ben@openforce.net,arjun@openforce.net
     @cvs-id $Id$
@@ -24,35 +24,31 @@ ad_library {
 
 namespace eval dotlrn_calendar {}
 
-ad_proc -public dotlrn_calendar::package_key {
-} {
+ad_proc -public dotlrn_calendar::package_key {} {
     What package does this applet deal with?
 } {
     return "calendar"
 }
 
-ad_proc -public dotlrn_calendar::my_package_key {
-} {
+ad_proc -public dotlrn_calendar::my_package_key {} {
     What's my package key?
 } {
     return "dotlrn-calendar"
 }
 
-ad_proc -public dotlrn_calendar::applet_key {
-} {
+ad_proc -public dotlrn_calendar::applet_key {} {
     What's my applet key?
 } {
     return "dotlrn_calendar"
 }
 
-ad_proc -public dotlrn_calendar::get_pretty_name {
-} {
+ad_proc -public dotlrn_calendar::get_pretty_name {} {
+    @return the pretty name
 } {
     return "#calendar-portlet.pretty_name#"
 }
 
-ad_proc -public dotlrn_calendar::add_applet {
-} {
+ad_proc -public dotlrn_calendar::add_applet {} {
     Called for one time init - must be repeatable!
     @return new pkg_id or 0 on failure
 } {
@@ -60,24 +56,24 @@ ad_proc -public dotlrn_calendar::add_applet {
     # Use the package_key for the -url param - "/" are not allowed!
     if {![dotlrn::is_package_mounted -package_key [package_key]]} {
 	set package_id [dotlrn::mount_package \
-                -package_key [package_key] \
-                -url [package_key] \
-                -directory_p "t"]
+                            -package_key [package_key] \
+                            -url [package_key] \
+                            -directory_p "t"]
 
 	# We have to store this package_id!
 	# This is the package_id for the calendar instantiation of dotLRN
 	parameter::set_from_package_key \
-	        -package_key [my_package_key] \
-	        -parameter main_calendar_package_id \
-	        -value $package_id
+            -package_key [my_package_key] \
+            -parameter main_calendar_package_id \
+            -value $package_id
     }
 
     dotlrn_applet::add_applet_to_dotlrn -applet_key [applet_key] -package_key [my_package_key]
 }
 
-ad_proc -public dotlrn_calendar::remove_applet {
-} {
-    One-time destroy for when the entire applet is removed from dotlrn. 
+ad_proc -public dotlrn_calendar::remove_applet {} {
+    One-time destroy for when the entire applet is removed from
+    dotlrn.
 } {
     ad_return_complaint 1 "[applet_key] remove_applet not implemented!"
 }
@@ -94,10 +90,10 @@ ad_proc -public dotlrn_calendar::calendar_create_helper {
 
     # New calendar proc
     return [calendar::new \
-	    -owner_id [ad_conn user_id] \
-	    -private_p "f" \
-	    -calendar_name $community_name \
-	    -package_id $package_id]
+                -owner_id [ad_conn user_id] \
+                -private_p "f" \
+                -calendar_name $community_name \
+                -package_id $package_id]
 }
 
 ad_proc -public dotlrn_calendar::add_applet_to_community {
@@ -106,9 +102,7 @@ ad_proc -public dotlrn_calendar::add_applet_to_community {
     Add the calendar applet to a specific dotlrn community
 } {
     set results [add_applet_to_community_helper \
-	    -community_id $community_id
-    ]
-    
+                     -community_id $community_id]
     return [lindex $results 0]
 }
 
@@ -124,14 +118,15 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
     #
     # automount calendar in this community
     set node_id [site_node::get_node_id \
-            -url [lindex [site_node::get_url_from_object_id -object_id [dotlrn_community::get_package_id $community_id]] 0] \
-	    ]
+                     -url [lindex [site_node::get_url_from_object_id \
+                                       -object_id [dotlrn_community::get_package_id $community_id]] 0] \
+                    ]
 
     set package_id [dotlrn::mount_package \
-	    -parent_node_id $node_id \
-	    -package_key [package_key] \
-	    -url [package_key] \
-	    -directory_p "t"]
+                        -parent_node_id $node_id \
+                        -package_key [package_key] \
+                        -url [package_key] \
+                        -directory_p "t"]
 
     # Break security inheritance for the newly created calendar
     # object to explicitly take the create permission from
@@ -140,33 +135,30 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
     permission::set_not_inherit -object_id $package_id
 
     # mount attachments under calendar, if available
-    # attachments requires that dotlrn-fs is already mounted 
+    # attachments requires that dotlrn-fs is already mounted
     if {[apm_package_registered_p attachments]
-    && [dotlrn_community::applet_active_p \
-	    -community_id $community_id \
-	    -applet_key [dotlrn_fs::applet_key]]} {
+        && [dotlrn_community::applet_active_p \
+                -community_id $community_id \
+                -applet_key [dotlrn_fs::applet_key]]} {
 
 	set attachments_node_id [site_node::new \
-                -name [attachments::get_url] \
-                -parent_id [site_node::get_node_id_from_object_id \
-		-object_id $package_id
-	]
-	]
+                                     -name [attachments::get_url] \
+                                     -parent_id [site_node::get_node_id_from_object_id \
+                                                     -object_id $package_id]]
 
 	site_node::mount \
-                -node_id $attachments_node_id \
-                -object_id [apm_package_id_from_key attachments]
+            -node_id $attachments_node_id \
+            -object_id [apm_package_id_from_key attachments]
 
 	set fs_package_id [dotlrn_community::get_applet_package_id \
-		-community_id $community_id \
-		-applet_key [dotlrn_fs::applet_key]
-	]
-	
+                               -community_id $community_id \
+                               -applet_key [dotlrn_fs::applet_key]]
+
 	# map the fs root folder to the package_id of the new forums pkg
 	attachments::map_root_folder \
-                -package_id $package_id \
-                -folder_id [fs::get_root_folder -package_id $fs_package_id] 
-	
+            -package_id $package_id \
+            -folder_id [fs::get_root_folder -package_id $fs_package_id]
+
     } else {
 	ns_log Warning "DOTLRN-CALENDAR: Warning attachments or dotlrn-fs not found!"
     }
@@ -176,36 +168,34 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
 
     # Here we have both the calendar ID and the node ID
     # We associate content using portal mapping (ben)
-    # This SHOULD NOT work, but it does cause we're 
+    # This SHOULD NOT work, but it does cause we're
     # reinstantiating calendar
     set calendar_node_url [site_node::get_children -package_key [package_key] -node_id $node_id]
     set calendar_node_id [site_node::get_node_id -url $calendar_node_url]
 
     site_node_object_map::new \
-	    -node_id $calendar_node_id \
-	    -object_id $calendar_id
+        -node_id $calendar_node_id \
+        -object_id $calendar_id
 
     # Explicitly grant admin to community admins and read to community members.
     # Admins have full rights on this calendar package then, community members
     # may only read.
     set admin_segment_id [dotlrn_community::get_rel_segment_id \
-	    -community_id $community_id \
-	    -rel_type dotlrn_admin_rel
-    ]
+                              -community_id $community_id \
+                              -rel_type dotlrn_admin_rel]
     permission::grant \
-	    -party_id $admin_segment_id \
-	    -object_id $package_id \
-	    -privilege "admin"
+        -party_id $admin_segment_id \
+        -object_id $package_id \
+        -privilege "admin"
 
     # same thing for reading, cause it's not granted by context_id (ben)
     set members_segment_id [dotlrn_community::get_rel_segment_id \
-	    -community_id $community_id \
-	    -rel_type dotlrn_member_rel
-    ]
+                                -community_id $community_id \
+                                -rel_type dotlrn_member_rel]
     permission::grant \
-	    -party_id $members_segment_id \
-	    -object_id $package_id \
-	    -privilege "read"
+        -party_id $members_segment_id \
+        -object_id $package_id \
+        -privilege "read"
     # 
     # ** portlet stuff **
     # 
@@ -219,12 +209,11 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
     # 
 
     set admin_portal_id [dotlrn_community::get_admin_portal_id \
-	    -community_id $community_id
-    ]
+                             -community_id $community_id]
     
     calendar_admin_portlet::add_self_to_page \
-            -portal_id $admin_portal_id \
-            -calendar_id $calendar_id
+        -portal_id $admin_portal_id \
+        -calendar_id $calendar_id
 
     #
     # set up the Class Schedule Portlet
@@ -236,9 +225,9 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
     set portal_id [dotlrn_community::get_portal_id -community_id $community_id]
 
     calendar_list_portlet::add_self_to_page \
-            -portal_id $portal_id \
-            -calendar_id $calendar_id \
-            -scoped_p $scoped_p
+        -portal_id $portal_id \
+        -calendar_id $calendar_id \
+        -scoped_p $scoped_p
 
     #
     # set up the calendar and full calendar portlets using add_portlet_helper
@@ -259,7 +248,7 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
 ad_proc -public dotlrn_calendar::remove_applet_from_community {
     community_id
 } {
-    remove the applet from the community
+    Remove the applet from the community.
 } {        
     ad_return_complaint 1 "[applet_key] remove_applet_from_community not implemented!"
 }
@@ -279,14 +268,14 @@ ad_proc -public dotlrn_calendar::add_user {
 	# How we do this is a tad tricky
 	# set calendar_id [calendar_create $user_id "t" "Personal"]
 	set calendar_id [calendar::new \
-		-owner_id $user_id \
-		-private_p "t" \
-		-calendar_name "Personal" \
-		-package_id [parameter::get_from_package_key -package_key [my_package_key] -parameter main_calendar_package_id]]
+                             -owner_id $user_id \
+                             -private_p "t" \
+                             -calendar_name "Personal" \
+                             -package_id [parameter::get_from_package_key -package_key [my_package_key] -parameter main_calendar_package_id]]
 
 	# Here we map the calendar to the main dotlrn package
-    set node_url [site_node::get_children -package_key [package_key] -node_id [dotlrn::get_node_id]]
-    set node_id [site_node::get_node_id -url $node_url]
+        set node_url [site_node::get_children -package_key [package_key] -node_id [dotlrn::get_node_id]]
+        set node_id [site_node::get_node_id -url $node_url]
 
 	site_node_object_map::new -node_id $node_id -object_id $calendar_id
     }
@@ -298,8 +287,8 @@ ad_proc -public dotlrn_calendar::add_user {
     # Avoid a stale cache
     ::dotlrn::dotlrn_user_cache flush -partition_key $user_id $user_id-portal_id
     dotlrn_calendar::add_portlet_helper \
-            [dotlrn::get_portal_id -user_id $user_id] \
-            $args
+        [dotlrn::get_portal_id -user_id $user_id] \
+        $args
 }
 
 ad_proc -public dotlrn_calendar::remove_user {
@@ -380,9 +369,9 @@ ad_proc -public dotlrn_calendar::add_portlet {
     }  else {
 	# add this portlet to all types of communities
 	calendar_list_portlet::add_self_to_page \
-                -portal_id $portal_id \
-                -calendar_id 0 \
-                -scoped_p f
+            -portal_id $portal_id \
+            -calendar_id 0 \
+            -scoped_p f
     }     
 
     add_portlet_helper $portal_id $args
@@ -396,18 +385,18 @@ ad_proc -private dotlrn_calendar::add_portlet_helper {
     Params for the portlet are sent to this proc by the caller.
 } {
     calendar_portlet::add_self_to_page \
-            -portal_id $portal_id \
-            -pretty_name [ns_set get $args "pretty_name"] \
-            -calendar_id [ns_set get $args "calendar_id"]  \
-            -scoped_p [ns_set get $args "scoped_p"] \
-            -param_action [ns_set get $args "param_action"]
+        -portal_id $portal_id \
+        -pretty_name [ns_set get $args "pretty_name"] \
+        -calendar_id [ns_set get $args "calendar_id"]  \
+        -scoped_p [ns_set get $args "scoped_p"] \
+        -param_action [ns_set get $args "param_action"]
 
     calendar_full_portlet::add_self_to_page \
-            -portal_id $portal_id \
-            -page_name [ns_set get $args "full_portlet_page_name"] \
-            -calendar_id [ns_set get $args "calendar_id"]  \
-            -scoped_p [ns_set get $args "scoped_p"] \
-            -param_action [ns_set get $args "param_action"]
+        -portal_id $portal_id \
+        -page_name [ns_set get $args "full_portlet_page_name"] \
+        -calendar_id [ns_set get $args "calendar_id"]  \
+        -scoped_p [ns_set get $args "scoped_p"] \
+        -param_action [ns_set get $args "param_action"]
 }
 
 ad_proc -public dotlrn_calendar::remove_portlet {
@@ -421,12 +410,12 @@ ad_proc -public dotlrn_calendar::remove_portlet {
     @param args An ns_set with the calendar_id. 
 } { 
     calendar_portlet::remove_self_from_page \
-            -portal_id $portal_id \
-            -calendar_id [ns_set get $args "calendar_id"] 
+        -portal_id $portal_id \
+        -calendar_id [ns_set get $args "calendar_id"] 
 
     calendar_full_portlet::remove_self_from_page \
-            -portal_id $portal_id \
-            -calendar_id [ns_set get $args "calendar_id"] 
+        -portal_id $portal_id \
+        -calendar_id [ns_set get $args "calendar_id"] 
 }
 
 ad_proc -public dotlrn_calendar::clone {
@@ -439,15 +428,13 @@ ad_proc -public dotlrn_calendar::clone {
 
     # copy the old_comm's item types table
     set old_calendar_id [get_group_calendar_id \
-            -community_id $old_community_id
-    ]
+                             -community_id $old_community_id]
     
     add_applet_to_community_helper \
-	    -community_id $new_community_id
+        -community_id $new_community_id
 
     set calendar_id [get_group_calendar_id \
-            -community_id $new_community_id
-    ]
+                         -community_id $new_community_id]
 
     db_dml copy_cal_item_types {}
 }
@@ -458,7 +445,7 @@ ad_proc -public dotlrn_calendar::change_event_handler {
     old_value
     new_value
 } { 
-    listens for the following events: rename
+    Listens for the following events: rename
 } { 
     switch $event {
 	rename {
@@ -487,14 +474,12 @@ ad_proc -public dotlrn_calendar::get_group_calendar_id {
     Find the group_calendar_id for the given community
 } {
     set portal_id [dotlrn_community::get_portal_id \
-	    -community_id $community_id
-    ]
+                       -community_id $community_id]
 
     # get the calendar element for this community
     set element_id [portal::get_element_ids_by_ds \
-	    $portal_id \
-	    [calendar_portlet::get_my_name]
-    ]
+                        $portal_id \
+                        [calendar_portlet::get_my_name]]
 
     return [portal::get_element_param $element_id "calendar_id"]
 }
