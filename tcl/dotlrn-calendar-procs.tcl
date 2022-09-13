@@ -55,14 +55,14 @@ ad_proc -public dotlrn_calendar::add_applet {} {
     # FIXME: won't work with multiple dotlrn instances
     # Use the package_key for the -url param - "/" are not allowed!
     if {![dotlrn::is_package_mounted -package_key [package_key]]} {
-	set package_id [dotlrn::mount_package \
+        set package_id [dotlrn::mount_package \
                             -package_key [package_key] \
                             -url [package_key] \
                             -directory_p "t"]
 
-	# We have to store this package_id!
-	# This is the package_id for the calendar instantiation of dotLRN
-	parameter::set_from_package_key \
+        # We have to store this package_id!
+        # This is the package_id for the calendar instantiation of dotLRN
+        parameter::set_from_package_key \
             -package_key [my_package_key] \
             -parameter main_calendar_package_id \
             -value $package_id
@@ -141,26 +141,26 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
                 -community_id $community_id \
                 -applet_key [dotlrn_fs::applet_key]]} {
 
-	set attachments_node_id [site_node::new \
+        set attachments_node_id [site_node::new \
                                      -name [attachments::get_url] \
                                      -parent_id [site_node::get_node_id_from_object_id \
                                                      -object_id $package_id]]
 
-	site_node::mount \
+        site_node::mount \
             -node_id $attachments_node_id \
             -object_id [apm_package_id_from_key attachments]
 
-	set fs_package_id [dotlrn_community::get_applet_package_id \
+        set fs_package_id [dotlrn_community::get_applet_package_id \
                                -community_id $community_id \
                                -applet_key [dotlrn_fs::applet_key]]
 
-	# map the fs root folder to the package_id of the new forums pkg
-	attachments::map_root_folder \
+        # map the fs root folder to the package_id of the new forums pkg
+        attachments::map_root_folder \
             -package_id $package_id \
             -folder_id [fs::get_root_folder -package_id $fs_package_id]
 
     } else {
-	ns_log Warning "DOTLRN-CALENDAR: Warning attachments or dotlrn-fs not found!"
+        ns_log Warning "DOTLRN-CALENDAR: Warning attachments or dotlrn-fs not found!"
     }
 
     # Here we create the calendar
@@ -264,20 +264,20 @@ ad_proc -public dotlrn_calendar::add_user {
     set calendar_id [calendar::have_private_p -return_id 1 -party_id $user_id]
 
     if {$calendar_id == 0} {
-	# HERE we need to find the package ID for the calendar instance at the top level
-	# How we do this is a tad tricky
-	# set calendar_id [calendar_create $user_id "t" "Personal"]
-	set calendar_id [calendar::new \
+        # HERE we need to find the package ID for the calendar instance at the top level
+        # How we do this is a tad tricky
+        # set calendar_id [calendar_create $user_id "t" "Personal"]
+        set calendar_id [calendar::new \
                              -owner_id $user_id \
                              -private_p "t" \
                              -calendar_name "Personal" \
                              -package_id [parameter::get_from_package_key -package_key [my_package_key] -parameter main_calendar_package_id]]
 
-	# Here we map the calendar to the main dotlrn package
+        # Here we map the calendar to the main dotlrn package
         set node_url [site_node::get_children -package_key [package_key] -node_id [dotlrn::get_node_id]]
         set node_id [site_node::get_node_id -url $node_url]
 
-	site_node_object_map::new -node_id $node_id -object_id $calendar_id
+        site_node_object_map::new -node_id $node_id -object_id $calendar_id
     }
 
     set args [ns_set create]
@@ -363,12 +363,12 @@ ad_proc -public dotlrn_calendar::add_portlet {
     ns_set put $args scoped_p f
 
     if {$type eq "user"} {
-	# the portlet has a special name on a user portal
-	ns_set put $args pretty_name "#dotlrn-calendar.Day_Summary#"
-	ns_set put $args scoped_p t
+        # the portlet has a special name on a user portal
+        ns_set put $args pretty_name "#dotlrn-calendar.Day_Summary#"
+        ns_set put $args scoped_p t
     }  else {
-	# add this portlet to all types of communities
-	calendar_list_portlet::add_self_to_page \
+        # add this portlet to all types of communities
+        calendar_list_portlet::add_self_to_page \
             -portal_id $portal_id \
             -calendar_id 0 \
             -scoped_p f
@@ -448,9 +448,9 @@ ad_proc -public dotlrn_calendar::change_event_handler {
     Listens for the following events: rename
 } {
     switch $event {
-	rename {
-	    handle_rename -community_id $community_id -old_value $old_value -new_value $new_value
-	}
+        rename {
+            handle_rename -community_id $community_id -old_value $old_value -new_value $new_value
+        }
     }
 }
 
@@ -488,21 +488,21 @@ ad_proc -private dotlrn_calendar::get_default_page { portal_type } {
     The pretty name of the page to add the portlet to.
 } {
     switch $portal_type {
-	user {
-	    set page_name "#dotlrn.user_portal_page_calendar_title#"
-	}
-	dotlrn_community {
-	    set page_name "#dotlrn.subcomm_page_calendar_title#"
-	}
-	dotlrn_class_instance {
-	    set page_name "#dotlrn.class_page_calendar_title#"
-	}
-	dotlrn_club {
-	    set page_name "#dotlrn.club_page_calendar_title#"
-	}
-	default {
-	    ns_log Error "dotlrn-calendar applet: Don't know page name to add portlet to for portal type $portal_type"
-	}
+        user {
+            set page_name "#dotlrn.user_portal_page_calendar_title#"
+        }
+        dotlrn_community {
+            set page_name "#dotlrn.subcomm_page_calendar_title#"
+        }
+        dotlrn_class_instance {
+            set page_name "#dotlrn.class_page_calendar_title#"
+        }
+        dotlrn_club {
+            set page_name "#dotlrn.club_page_calendar_title#"
+        }
+        default {
+            ns_log Error "dotlrn-calendar applet: Don't know page name to add portlet to for portal type $portal_type"
+        }
     }
 
     return $page_name
