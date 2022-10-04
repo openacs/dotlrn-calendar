@@ -174,6 +174,24 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
     # Here we create the calendar
     set calendar_id [calendar_create_helper -community_id $community_id -package_id $package_id]
 
+    #
+    # Administrators of the parent community should also be able to
+    # administer this applet in the child community.
+    #
+    set parent_community_admins [db_string get_admins {
+        select segment_id from rel_segments
+         where group_id = (select parent_community_id
+                             from dotlrn_communities_all
+                            where community_id = :community_id)
+           and rel_type = 'dotlrn_admin_rel'
+    } -default ""]
+    if { $parent_community_admins ne ""} {
+        permission::grant \
+            -party_id $parent_community_admins \
+            -object_id $package_id \
+            -privilege "admin"
+    }
+
     # Here we have both the calendar ID and the node ID
     # We associate content using portal mapping (ben)
     # This SHOULD NOT work, but it does cause we're
