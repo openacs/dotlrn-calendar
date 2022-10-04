@@ -128,10 +128,7 @@ ad_proc -public dotlrn_calendar::add_applet_to_community_helper {
     # ** setup stuff **
     #
     # automount calendar in this community
-    set node_id [site_node::get_node_id \
-                     -url [lindex [site_node::get_url_from_object_id \
-                                       -object_id [dotlrn_community::get_package_id $community_id]] 0] \
-                    ]
+    set node_id [site_node::get_node_id_from_object_id -object_id [dotlrn_community::get_package_id $community_id]]
 
     set package_id [dotlrn::mount_package \
                         -parent_node_id $node_id \
