@@ -82,18 +82,29 @@ ad_proc -public dotlrn_calendar::calendar_create_helper {
     {-community_id:required}
     {-package_id:required}
 } {
-    A helper proc to create a calendar for a comm, returns the new calendar_id
-} {
-    # create the community's calendar, the "f" is for a public calendar
-    set community_name [dotlrn_community::get_community_name $community_id]
-    # return [calendar_create [ad_conn "user_id"] "f" $community_name]
+    A helper proc to create a new public calendar for a community.
 
-    # New calendar proc
-    return [calendar::new \
-                -owner_id [ad_conn user_id] \
-                -private_p "f" \
-                -calendar_name $community_name \
-                -package_id $package_id]
+    @return the new calendar_id
+} {
+    set community_name [dotlrn_community::get_community_name $community_id]
+
+    set owner_id [ad_conn user_id]
+
+    set calendar_id [calendar::new \
+                         -owner_id $owner_id \
+                         -private_p "f" \
+                         -calendar_name $community_name \
+                         -package_id $package_id]
+
+    #
+    # The calendar.new stored procedure will assign "calendar_admin"
+    # permission to the creation user. We remove it, as the creation
+    # user already has either already admin privileges or in the case
+    # of automatic creation, the creation user (-20) does not need it
+    #
+    permission::revoke -party_id $owner_id -object_id $calendar_id -privilege "calendar_admin"
+
+    return $calendar_id
 }
 
 ad_proc -public dotlrn_calendar::add_applet_to_community {
