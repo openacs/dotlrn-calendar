@@ -7,7 +7,7 @@
     <initial-install-p>f</initial-install-p>
     <singleton-p>t</singleton-p>
 
-    <version name="2.10.1b1" url="http://openacs.org/repository/download/apm/dotlrn-calendar-2.10.0.apm">
+    <version name="2.10.1b1" url="http://openacs.org/repository/download/apm/dotlrn-calendar-2.10.1b1.apm">
         <owner url="http://openacs.org">OpenACS</owner>
         <summary>DotLRN Integration (Applet) for Calendar</summary>
         <release-date>2021-09-16</release-date>
