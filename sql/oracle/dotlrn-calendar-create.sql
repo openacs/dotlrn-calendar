@@ -14,7 +14,7 @@
 --  details.
 --
 
--- The dotlrn-calendar applet's implimentation of the dotlrn applet contract
+-- The dotlrn-calendar applet's implementation of the dotlrn applet contract
 --
 -- ben,arjun@openforce.net
 --
